@@ -40,37 +40,37 @@ To get started with the Japan Trip Planner bot, follow these steps:
 
 Here's how you can use Japan Trip Planner in your Discord channel:
 
-- **Create a new checklist**: `/create <trip-name>`
+- **Create a new checklist**: `/create <trip-name>`\
   Example: `/create My Japan Trip`
   
-- **Add an item to your checklist**: `/add <item>`
+- **Add an item to your checklist**: `/add <item>`\
   Example: `/add Get passport.`
 
-- **Remove an item from your checklist**: `/remove <index>` 
+- **Remove an item from your checklist**: `/remove <index>` \
   Example: `/remove 2` (where 2 is the index of the item you want to remove)
 
-- **View your current trip active**: `/view`
+- **View your current trip active**: `/view`\
   Example: `/view`
 
-- **View a specific trip**: `/view <trip-name>`
+- **View a specific trip**: `/view <trip-name>`\
   Example: `/view My Japan Trip`
 
-- **list all trips**: `/list`
+- **list all trips**: `/list`\
   Example: `/list`
 
-- **Delete a trip**: `/delete <trip-ID>`
+- **Delete a trip**: `/delete <trip-ID>`\
   Example: `/delete 1`
 
-- **add users to your trip**: `/adduser <@user> <TripID>`
+- **add users to your trip**: `/adduser <@user> <TripID>`\
   Example: `/adduser @user 1`
 
-- **remove users from your trip**: `/removeuser <@user>`
+- **remove users from your trip**: `/removeuser <@user>`\
   Example: `/removeuser @user`
   
-- **Complete an item**: `/complete <index>`
+- **Complete an item**: `/complete <index>`\
   Example: `/complete 1`
 
-- **Uncomplete an item**: `/uncomplete <index>`
+- **Uncomplete an item**: `/uncomplete <index>`\
   Example: `/uncomplete 2`_
 
 
