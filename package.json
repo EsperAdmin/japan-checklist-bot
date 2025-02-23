@@ -1,0 +1,19 @@
+{
+  "name": "japan-checklist",
+  "version": "0.0.1",
+  "description": "A simple discord bot that can be use to create a check list for what to bring to japan and what to get ready before going!",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EsperAdmin/japan-checklist-bot.git"
+  },
+  "author": "Arataka",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/EsperAdmin/japan-checklist-bot/issues"
+  },
+  "homepage": "https://github.com/EsperAdmin/japan-checklist-bot#readme"
+}
