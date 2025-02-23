@@ -253,7 +253,8 @@ client.on('interactionCreate', async interaction => {
                 { name: '/requests', description: 'View and accept/decline trip join requests.' },
                 { name: '/stats', description: 'View bot statistics (e.g., active trips, servers).' },
                 { name: '/uncomplete', description: 'Mark an item as incomplete in your active trip.' },
-                { name: '/view', description: 'View your active trip or a specific trip by name.' }
+                { name: '/view', description: 'View your active trip or a specific trip by name.' },
+                { name: 'View the source!', description: 'Visit the project [GitHub](https://github.com/EsperAdmin/japan-checklist-bot)' }
             ];
 
             const commandsPerPage = 5;
@@ -275,7 +276,7 @@ client.on('interactionCreate', async interaction => {
                 .setDescription(commandList)
                 .addFields({ name: 'Page', value: `${newPage}/${totalPages}`, inline: true })
                 .setFooter({
-                    text: 'This is an open-source Discord bot created with Grok 3 by xAI.',
+                    text: 'Your Japan Travel Buddy!',
                     iconURL: interaction.client.user.displayAvatarURL()
                 })
                 .setTimestamp();
