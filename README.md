@@ -61,7 +61,6 @@ Run these slash commands in your Discord server:
    npm install
    
 3. **Set Environment Variables** (in `.env` file):
-   ```bash
    - `DISCORD_TOKEN`: Your Discord bot token.
    - `MONGODB_URI`: The URI for your MongoDB instance.
    - `UNSPLASH_ACCESS_KEY`: Unsplash API key.
