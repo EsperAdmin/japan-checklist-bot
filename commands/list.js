@@ -13,7 +13,7 @@ module.exports = {
         const tripsPerPage = 10;
         const totalPages = Math.ceil(userTrips.length / tripsPerPage);
         const paginatedTrips = userTrips.slice(0, tripsPerPage)
-            .map((t, i) => `${i + 1}. ${t.name} (ID: ${t.tripId}) ${t.tripId === activeTripId ? '[Active]' : ''}`)
+            .map((t, i) => `${i + 1}. ${t.name} (ID: ${t.tripId}) ${t.tripId === activeTripId ? '**[Active]**' : ''}`)
             .join('\n') || 'None';
 
         const embed = new EmbedBuilder()

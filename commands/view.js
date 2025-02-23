@@ -45,7 +45,7 @@ module.exports = {
         const itemsPerPage = 10;
         const items = trip.items;
         const totalPages = Math.ceil(items.length / itemsPerPage);
-        const paginatedItems = items.slice(0, itemsPerPage).map(i => `${i.id}. ${i.name} ${i.complete ? '[✅]' : '[❌]'}`).join('\n') || 'None';
+        const paginatedItems = items.slice(0, itemsPerPage).map(i => `${i.id}. ${i.name} ${i.complete ? '[✅]' : '[]'}`).join('\n') || 'None';
         const users = trip.users.map(u => `<@${u}>`).join(', ');
 
         const embed = new EmbedBuilder()
