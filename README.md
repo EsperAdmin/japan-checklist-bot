@@ -25,25 +25,21 @@ Run these slash commands in your Discord server:
 | `/add`            | Add an item to your active trip (max 25).            | `/add item:Sunscreen`          |
 | `/adduser`        | Send a request to add a user to your active trip.    | `/adduser user:@Friend`        |
 | `/admin`          | Owner-only: View/manage all trips.                   | `/admin blacklist`             |
-| `/complete`       | Mark an item as complete in your active trip.        | `/complete item_id:1`          |
+| `/manage`         | Multi use command with sub command to manage your trip! | `/manage delete`            |
 | `/create`         | Create a new trip (max 10) and set it as active.     | `/create name:Beach Trip`      |
-| `/delete`         | Delete a trip by ID (creator only).                  | `/delete trip_id:<uuid>`       |
 | `/help`           | View all commands with details (paginated).          | `/help`                        |
 | `/japan`          | Get a random image of Japan.                         | `/japan`                       |
 | `/list`           | List all your trips with pagination.                 | `/list`                        |
-| `/remove`         | Remove an item from your active trip.                | `/remove item_id:1`            |
-| `/removeuser`     | Remove a user from your active trip.                 | `/removeuser user:@Friend`     |
 | `/requests`       | View and accept/decline trip join requests.          | `/requests`                    |
 | `/stats`          | View bot statistics.                                 | `/stats`                       |
-| `/uncomplete`     | Mark an item as incomplete in your active trip.      | `/uncomplete item_id:1`        |
 | `/view`           | View your active trip or a specific trip by name.    | `/view name:Beach Trip`        |
 
 ### Example Workflow
 1. **Create a Trip**: `/create name:Road Trip`
-2. **Add Items**: `/add item:Snacks`, `/add item:Map`
-3. **Invite a Friend**: `/adduser user:@Friend`
+2. **Add Tasks**: `/add item:get passport`, `/add item:get plain ticket`
+3. **Invite a Friend**: `/manage adduser user:@Friend`
 4. **Friend Accepts**: Friend runs `/requests` and clicks "Accept"
-5. **Manage Checklist**: `/complete item_id:1`, `/view`
+5. **Manage Checklist**: `/manage complete item_id:1`, `/view`
 
 ## Setup Instructions
 
