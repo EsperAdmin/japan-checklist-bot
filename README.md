@@ -1,9 +1,7 @@
-```markdown
-# Checklist Bot
+# Japan Checklist Bot
 
-![Checklist Bot Banner](https://via.placeholder.com/800x200.png?text=Checklist+Bot) <!-- Replace with a real banner if available -->
+Welcome to **Japan Checklist!**, a Discord bot made to help you plan your trip in Japan. This bot is very simple, add items to your check list and complete them! You can also add other users to your check list for collabrative planning!
 
-Welcome to **Checklist Bot**, a versatile Discord bot designed to help you manage trip checklists with ease! Whether you're planning a vacation, a road trip, or any adventure, this bot lets you create, edit, and share trip checklists right within your Discord server. Built with **Grok 3** by xAI, this open-source project combines powerful functionality with a user-friendly experience.
 
 ## Features
 
@@ -21,14 +19,12 @@ Welcome to **Checklist Bot**, a versatile Discord bot designed to help you manag
 ### Commands
 Run these slash commands in your Discord server:
 
-| Command           | Description                                           | Example Usage                  |
-|-------------------|-------------------------------------------------------|--------------------------------|
+| Command           | Description                                          | Example Usage                  |
+|-------------------|------------------------------------------------------|--------------------------------|
 | `/active`         | Set a trip as your active trip using its ID.         | `/active trip_id:<uuid>`       |
 | `/add`            | Add an item to your active trip (max 25).            | `/add item:Sunscreen`          |
 | `/adduser`        | Send a request to add a user to your active trip.    | `/adduser user:@Friend`        |
-| `/alltrips`       | Owner-only: View/manage all trips.                   | `/alltrips trip_id:<uuid>`     |
-| `/blacklist`      | Owner-only: Add/remove users from blacklist.         | `/blacklist action:add user:@User` |
-| `/blacklistview`  | Owner-only: View blacklisted users.                  | `/blacklistview`               |
+| `/admin`          | Owner-only: View/manage all trips.                   | `/admin blacklist`             |
 | `/complete`       | Mark an item as complete in your active trip.        | `/complete item_id:1`          |
 | `/create`         | Create a new trip (max 10) and set it as active.     | `/create name:Beach Trip`      |
 | `/delete`         | Delete a trip by ID (creator only).                  | `/delete trip_id:<uuid>`       |
