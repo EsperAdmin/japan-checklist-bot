@@ -17,7 +17,12 @@
   },
   "homepage": "https://github.com/EsperAdmin/japan-checklist-bot#readme",
   "dependencies": {
-    "discord.js": "^14.18.0"
+    "axios": "^1.7.9",
+    "discord.js": "^14.18.0",
+    "dotenv": "^16.4.7",
+    "mongodb": "^6.13.1",
+    "sanitize-html": "^2.14.0",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",
