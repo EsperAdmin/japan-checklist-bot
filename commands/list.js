@@ -1,11 +1,12 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const mongoSanitize = require('mongo-sanitize');
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('list')
         .setDescription('List all your trips'),
     async execute(interaction, { trips, activeTrips }) {
-        const userId = interaction.user.id;
+        const userId = mongoSanitize(interaction.user.id);
         const userTrips = await trips.find({ users: userId }).toArray();
         const activeTripEntry = await activeTrips.findOne({ userId });
         const activeTripId = activeTripEntry ? activeTripEntry.tripId : null;
@@ -13,19 +14,14 @@ module.exports = {
         const tripsPerPage = 10;
         const totalPages = Math.ceil(userTrips.length / tripsPerPage);
         const paginatedTrips = userTrips.slice(0, tripsPerPage)
-            .map((t, i) => `${i + 1}. ${t.name} (ID: ${t.tripId}) ${t.tripId === activeTripId ? '**[Active]**' : ''}`)
+            .map((t, i) => `${i + 1}. ${t.name} (ID: ${t.tripId}) ${t.tripId === activeTripId ? '[Active]' : ''}`)
             .join('\n') || 'None';
 
         const embed = new EmbedBuilder()
             .setColor('#3498DB')
             .setTitle('Your Trips')
             .setDescription(paginatedTrips)
-            .addFields({ name: 'Page', value: `1/${totalPages}`, inline: true })
-            .setFooter({
-                text: 'Your Japan Travel Buddy!',
-                iconURL: interaction.client.user.displayAvatarURL()
-            })
-            .setTimestamp();
+            .addFields({ name: 'Page', value: `1/${totalPages}`, inline: true });
 
         const buttons = new ActionRowBuilder()
             .addComponents(

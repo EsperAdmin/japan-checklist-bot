@@ -1,57 +1,100 @@
-const { Client, GatewayIntentBits, Collection } = require('discord.js');
+const { Client, GatewayIntentBits, Collection, StringSelectMenuBuilder, ActionRowBuilder } = require('discord.js');
 const { MongoClient } = require('mongodb');
+const { RateLimiterMemory } = require('rate-limiter-flexible');
 require('dotenv').config();
 const fs = require('fs').promises;
 const path = require('path');
+const mongoSanitize = require('mongo-sanitize');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 const mongoClient = new MongoClient(process.env.MONGO_URI);
 client.commands = new Collection();
 let db;
+let disallowedWords;
+
+const rateLimiter = new RateLimiterMemory({ points: 10, duration: 60 });
 
 async function connectMongo() {
-    await mongoClient.connect();
-    db = mongoClient.db('checklist_bot');
-    console.log('Connected to MongoDB');
+    try {
+        await mongoClient.connect();
+        db = mongoClient.db('checklist_bot');
+        console.log('Connected to MongoDB');
+    } catch (error) {
+        console.error('MongoDB connection failed:', error);
+        process.exit(1);
+    }
 }
 
-client.once('ready', async () => {
-    console.log(`Logged in as ${client.user.tag} (Shard ${client.shard.ids[0]})`);
-    await connectMongo();
-    await loadCommands();
-    client.startTime = Date.now();
-});
+async function loadDisallowedWords() {
+    try {
+        const data = await fs.readFile(path.join(__dirname, 'disallowedWords.json'), 'utf8');
+        disallowedWords = JSON.parse(data);
+    } catch (error) {
+        console.error('Failed to load disallowedWords.json:', error);
+        disallowedWords = [];
+    }
+}
 
 async function loadCommands() {
     const commandsPath = path.join(__dirname, 'commands');
-    const commandFiles = await fs.readdir(commandsPath);
+    const commandFolders = await fs.readdir(commandsPath, { withFileTypes: true });
+
     const commands = [];
 
-    for (const file of commandFiles) {
-        const filePath = path.join(commandsPath, file);
-        const command = require(filePath);
-        client.commands.set(command.data.name, command);
-        commands.push(command.data.toJSON());
+    for (const folder of commandFolders) {
+        const folderPath = path.join(commandsPath, folder.name);
+        if (folder.isDirectory()) {
+            const commandFiles = await fs.readdir(folderPath);
+            for (const file of commandFiles) {
+                if (file.endsWith('.js')) {
+                    const filePath = path.join(folderPath, file);
+                    const command = require(filePath);
+                    client.commands.set(command.data.name, command);
+                    commands.push(command.data.toJSON());
+                }
+            }
+        } else if (folder.name.endsWith('.js')) {
+            const filePath = path.join(commandsPath, folder.name);
+            const command = require(filePath);
+            client.commands.set(command.data.name, command);
+            commands.push(command.data.toJSON());
+        }
     }
 
     await client.application.commands.set(commands);
     console.log(`Registered ${commands.length} slash commands on Shard ${client.shard.ids[0]}!`);
 }
 
+const requiredEnv = ['DISCORD_TOKEN', 'MONGO_URI', 'BOT_OWNER_ID'];
+requiredEnv.forEach(key => {
+    if (!process.env[key]) {
+        console.error(`Missing environment variable: ${key}`);
+        process.exit(1);
+    }
+});
+
+client.once('ready', async () => {
+    console.log(`Logged in as ${client.user.tag} (Shard ${client.shard.ids[0]})`);
+    await connectMongo();
+    await loadDisallowedWords();
+    await loadCommands();
+    client.startTime = Date.now();
+});
+
 client.on('interactionCreate', async interaction => {
-    if (!interaction.isCommand() && !interaction.isButton()) return;
+    if (!interaction.isCommand() && !interaction.isButton() && !interaction.isStringSelectMenu()) return;
 
     const trips = db.collection('trips');
     const activeTrips = db.collection('activeTrips');
     const requests = db.collection('requests');
     const blacklist = db.collection('blacklist');
 
-    if (await blacklist.findOne({ userId: interaction.user.id })) {
+    if (await blacklist.findOne({ userId: mongoSanitize(interaction.user.id) })) {
         const { EmbedBuilder } = require('discord.js');
         const embed = new EmbedBuilder()
             .setColor('#FF0000')
-            .setTitle('Access Denied')
-            .setDescription('You are blacklisted from using this bot.');
+            .setTitle('Error')
+            .setDescription('You cannot use this bot at this time.');
         return interaction.reply({ embeds: [embed], ephemeral: true });
     }
 
@@ -59,16 +102,27 @@ client.on('interactionCreate', async interaction => {
         const command = client.commands.get(interaction.commandName);
         if (!command) return;
 
+        try {
+            await rateLimiter.consume(interaction.user.id);
+        } catch {
+            const { EmbedBuilder } = require('discord.js');
+            const embed = new EmbedBuilder()
+                .setColor('#FF0000')
+                .setTitle('Rate Limit Exceeded')
+                .setDescription('Slow down! Too many commands.');
+            return await interaction.reply({ embeds: [embed], ephemeral: true });
+        }
+
         await interaction.deferReply();
         try {
-            await command.execute(interaction, { trips, activeTrips, requests, blacklist }, client);
+            await command.execute(interaction, { trips, activeTrips, requests, blacklist, disallowedWords }, client);
         } catch (error) {
-            console.error(error);
+            console.error(`Command ${interaction.commandName} failed:`, error);
             const { EmbedBuilder } = require('discord.js');
             const embed = new EmbedBuilder()
                 .setColor('#FF0000')
                 .setTitle('Error')
-                .setDescription('An error occurred while executing the command.');
+                .setDescription(error.name === 'MongoError' ? 'Database issue, try later.' : 'Command failed.');
             await interaction.editReply({ embeds: [embed] });
         }
     } else if (interaction.isButton()) {
@@ -76,13 +130,13 @@ client.on('interactionCreate', async interaction => {
         const currentPage = parseInt(page);
 
         if (type === 'trip') {
-            const trip = await trips.findOne({ tripId: id });
+            const trip = await trips.findOne({ tripId: mongoSanitize(id) });
             if (!trip || !trip.users.includes(interaction.user.id)) {
                 const { EmbedBuilder } = require('discord.js');
                 const embed = new EmbedBuilder()
                     .setColor('#FF0000')
                     .setTitle('Error')
-                    .setDescription('Trip not found or you don\'t have access!');
+                    .setDescription('Trip not found or you don’t have permission!');
                 return await interaction.update({ embeds: [embed], components: [] });
             }
 
@@ -117,7 +171,7 @@ client.on('interactionCreate', async interaction => {
 
             await interaction.update({ embeds: [embed], components: items.length > itemsPerPage ? [buttons] : [] });
         } else if (type === 'request') {
-            const request = await requests.findOne({ requestId: id, targetUserId: interaction.user.id });
+            const request = await requests.findOne({ requestId: mongoSanitize(id), targetUserId: interaction.user.id });
             if (!request) {
                 const { EmbedBuilder } = require('discord.js');
                 const embed = new EmbedBuilder()
@@ -127,7 +181,7 @@ client.on('interactionCreate', async interaction => {
                 return await interaction.update({ embeds: [embed], components: [] });
             }
 
-            const trip = await trips.findOne({ tripId: request.tripId });
+            const trip = await trips.findOne({ tripId: mongoSanitize(request.tripId) });
             const { EmbedBuilder } = require('discord.js');
             if (action === 'accept') {
                 await trips.updateOne({ tripId: trip.tripId }, { $push: { users: interaction.user.id } });
@@ -146,7 +200,8 @@ client.on('interactionCreate', async interaction => {
                 await interaction.update({ embeds: [embed], components: [] });
             }
         } else if (type === 'list') {
-            const userId = id;
+            const userId = mongoSanitize(id);
+            if (interaction.user.id !== userId) return;
             const userTrips = await trips.find({ users: userId }).toArray();
             const activeTripEntry = await activeTrips.findOne({ userId });
             const activeTripId = activeTripEntry ? activeTripEntry.tripId : null;
@@ -176,85 +231,88 @@ client.on('interactionCreate', async interaction => {
                 );
 
             await interaction.update({ embeds: [embed], components: userTrips.length > tripsPerPage ? [buttons] : [] });
-        } else if (type === 'alltrips') {
-            const allTrips = await trips.find({}).toArray();
-            const tripsPerPage = 10;
-            const totalPages = Math.ceil(allTrips.length / tripsPerPage);
-            let newPage = currentPage;
-            if (action === 'prev' && newPage > 1) newPage--;
-            if (action === 'next' && newPage < totalPages) newPage++;
+        } else if (type === 'admin') {
+            if (interaction.user.id !== process.env.BOT_OWNER_ID) {
+                const { EmbedBuilder } = require('discord.js');
+                const embed = new EmbedBuilder()
+                    .setColor('#FF0000')
+                    .setTitle('Error')
+                    .setDescription('Owner-only interaction!');
+                return await interaction.update({ embeds: [embed], components: [] });
+            }
 
-            const start = (newPage - 1) * tripsPerPage;
-            const end = start + tripsPerPage;
-            const paginatedTrips = allTrips.slice(start, end)
-                .map((t, i) => `${start + i + 1}. ${t.name} (ID: ${t.tripId}, Creator: <@${t.userId}>)`)
-                .join('\n') || 'None';
+            if (id === 'alltrips') {
+                const allTrips = await trips.find({}).toArray();
+                const tripsPerPage = 10;
+                const totalPages = Math.ceil(allTrips.length / tripsPerPage);
+                let newPage = currentPage;
+                if (action === 'prev' && newPage > 1) newPage--;
+                if (action === 'next' && newPage < totalPages) newPage++;
 
-            const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
-            const embed = new EmbedBuilder()
-                .setColor('#FF00FF')
-                .setTitle('All Trips')
-                .setDescription(paginatedTrips)
-                .addFields({ name: 'Page', value: `${newPage}/${totalPages}`, inline: true });
+                const start = (newPage - 1) * tripsPerPage;
+                const end = start + tripsPerPage;
+                const paginatedTrips = allTrips.slice(start, end)
+                    .map((t, i) => `${start + i + 1}. ${t.name} (ID: ${t.tripId}, Creator: <@${t.userId}>)`)
+                    .join('\n') || 'None';
 
-            const buttons = new ActionRowBuilder()
-                .addComponents(
-                    new ButtonBuilder().setCustomId(`prev_alltrips_all_${newPage}`).setLabel('Previous').setStyle(ButtonStyle.Primary).setDisabled(newPage === 1),
-                    new ButtonBuilder().setCustomId(`next_alltrips_all_${newPage}`).setLabel('Next').setStyle(ButtonStyle.Primary).setDisabled(newPage === totalPages)
-                );
+                const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+                const embed = new EmbedBuilder()
+                    .setColor('#FF00FF')
+                    .setTitle('All Trips')
+                    .setDescription(paginatedTrips)
+                    .addFields({ name: 'Page', value: `${newPage}/${totalPages}`, inline: true });
 
-            await interaction.update({ embeds: [embed], components: allTrips.length > tripsPerPage ? [buttons] : [] });
-        } else if (type === 'blacklist') {
-            const blacklistedUsers = await blacklist.find({}).toArray();
-            const usersPerPage = 10;
-            const totalPages = Math.ceil(blacklistedUsers.length / usersPerPage);
-            let newPage = currentPage;
-            if (action === 'prev' && newPage > 1) newPage--;
-            if (action === 'next' && newPage < totalPages) newPage++;
+                const buttons = new ActionRowBuilder()
+                    .addComponents(
+                        new ButtonBuilder().setCustomId(`prev_admin_alltrips_${newPage}`).setLabel('Previous').setStyle(ButtonStyle.Primary).setDisabled(newPage === 1),
+                        new ButtonBuilder().setCustomId(`next_admin_alltrips_${newPage}`).setLabel('Next').setStyle(ButtonStyle.Primary).setDisabled(newPage === totalPages)
+                    );
 
-            const start = (newPage - 1) * usersPerPage;
-            const end = start + usersPerPage;
-            const paginatedUsers = blacklistedUsers.slice(start, end)
-                .map((u, i) => `${start + i + 1}. <@${u.userId}> (ID: ${u.userId})`)
-                .join('\n') || 'None';
+                await interaction.update({ embeds: [embed], components: allTrips.length > tripsPerPage ? [buttons] : [] });
+            } else if (id === 'blacklistview') {
+                const blacklistedUsers = await blacklist.find({}).toArray();
+                const usersPerPage = 10;
+                const totalPages = Math.ceil(blacklistedUsers.length / usersPerPage);
+                let newPage = currentPage;
+                if (action === 'prev' && newPage > 1) newPage--;
+                if (action === 'next' && newPage < totalPages) newPage++;
 
-            const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
-            const embed = new EmbedBuilder()
-                .setColor('#FF0000')
-                .setTitle('Blacklisted Users')
-                .setDescription(paginatedUsers)
-                .addFields({ name: 'Page', value: `${newPage}/${totalPages}`, inline: true });
+                const start = (newPage - 1) * usersPerPage;
+                const end = start + usersPerPage;
+                const paginatedUsers = blacklistedUsers.slice(start, end)
+                    .map((u, i) => `${start + i + 1}. <@${u.userId}> (ID: ${u.userId})`)
+                    .join('\n') || 'None';
 
-            const buttons = new ActionRowBuilder()
-                .addComponents(
-                    new ButtonBuilder().setCustomId(`prev_blacklist_all_${newPage}`).setLabel('Previous').setStyle(ButtonStyle.Primary).setDisabled(newPage === 1),
-                    new ButtonBuilder().setCustomId(`next_blacklist_all_${newPage}`).setLabel('Next').setStyle(ButtonStyle.Primary).setDisabled(newPage === totalPages)
-                );
+                const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+                const embed = new EmbedBuilder()
+                    .setColor('#FF0000')
+                    .setTitle('Blacklisted Users')
+                    .setDescription(paginatedUsers)
+                    .addFields({ name: 'Page', value: `${newPage}/${totalPages}`, inline: true });
 
-            await interaction.update({ embeds: [embed], components: blacklistedUsers.length > usersPerPage ? [buttons] : [] });
+                const buttons = new ActionRowBuilder()
+                    .addComponents(
+                        new ButtonBuilder().setCustomId(`prev_admin_blacklistview_${newPage}`).setLabel('Previous').setStyle(ButtonStyle.Primary).setDisabled(newPage === 1),
+                        new ButtonBuilder().setCustomId(`next_admin_blacklistview_${newPage}`).setLabel('Next').setStyle(ButtonStyle.Primary).setDisabled(newPage === totalPages)
+                    );
+
+                await interaction.update({ embeds: [embed], components: blacklistedUsers.length > usersPerPage ? [buttons] : [] });
+            }
         } else if (type === 'help') {
-            const userId = id;
+            const userId = mongoSanitize(id);
             if (interaction.user.id !== userId) return;
 
             const commands = [
                 { name: '/active', description: 'Set a trip as your active trip using its ID.' },
                 { name: '/add', description: 'Add an item to your active trip’s checklist (max 25 items).' },
-                { name: '/adduser', description: 'Send a request to add a user to your active trip.' },
-                { name: '/alltrips', description: 'Owner-only: View/manage all trips across the bot.' },
-                { name: '/blacklist', description: 'Owner-only: Add/remove users from the bot blacklist.' },
-                { name: '/blacklistview', description: 'Owner-only: View the list of blacklisted users.' },
-                { name: '/complete', description: 'Mark an item as complete in your active trip.' },
+                { name: '/admin', description: 'Owner-only: Manage trips and blacklist (subcommands: alltrips, blacklist, blacklistview).' },
                 { name: '/create', description: 'Create a new trip (max 10 per user) and set it as active.' },
-                { name: '/delete', description: 'Delete a trip by ID (creator only).' },
                 { name: '/japan', description: 'Get a random image of Japan from Unsplash.' },
                 { name: '/list', description: 'List all your trips with pagination.' },
-                { name: '/remove', description: 'Remove an item from your active trip’s checklist.' },
-                { name: '/removeuser', description: 'Remove a user from your active trip.' },
+                { name: '/manage', description: 'Modify your active trip (subcommands: complete, remove, uncomplete, adduser, removeuser, delete).' },
                 { name: '/requests', description: 'View and accept/decline trip join requests.' },
                 { name: '/stats', description: 'View bot statistics (e.g., active trips, servers).' },
-                { name: '/uncomplete', description: 'Mark an item as incomplete in your active trip.' },
-                { name: '/view', description: 'View your active trip or a specific trip by name.' },
-                { name: 'View the source!', description: 'Visit the project [GitHub](https://github.com/EsperAdmin/japan-checklist-bot)' }
+                { name: '/view', description: 'View your active trip or a specific trip by name.' }
             ];
 
             const commandsPerPage = 5;
@@ -276,7 +334,7 @@ client.on('interactionCreate', async interaction => {
                 .setDescription(commandList)
                 .addFields({ name: 'Page', value: `${newPage}/${totalPages}`, inline: true })
                 .setFooter({
-                    text: 'Your Japan Travel Buddy!',
+                    text: 'This is an open-source Discord bot created with Grok 3 by xAI.',
                     iconURL: interaction.client.user.displayAvatarURL()
                 })
                 .setTimestamp();
@@ -300,7 +358,32 @@ client.on('interactionCreate', async interaction => {
                 components: commands.length > commandsPerPage ? [buttons] : []
             });
         }
-    }
+    } else if (interaction.isStringSelectMenu()) {
+        if (interaction.customId === 'delete_trip_select') {
+            const tripId = mongoSanitize(interaction.values[0]);
+            const userId = mongoSanitize(interaction.user.id);
+
+            const trip = await trips.findOne({ tripId, userId });
+            if (!trip) {
+                const { EmbedBuilder } = require('discord.js');
+                const embed = new EmbedBuilder()
+                    .setColor('#FF0000')
+                    .setTitle('Error')
+                    .setDescription('Trip not found or you’re not the creator!');
+                return await interaction.update({ embeds: [embed], components: [] });
+            }
+
+            await trips.deleteOne({ tripId });
+            await activeTrips.deleteMany({ tripId });
+
+            const { EmbedBuilder } = require('discord.js');
+            const embed = new EmbedBuilder()
+                .setColor('#00FF00')
+                .setTitle('Trip Deleted')
+                .setDescription(`Trip **${trip.name}** (ID: ${tripId}) has been deleted!`);
+            await interaction.update({ embeds: [embed], components: [] });
+        } 
+    } 
 });
 
 client.login(process.env.DISCORD_TOKEN);

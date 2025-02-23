@@ -1,16 +1,10 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const { v4: uuidv4 } = require('uuid');
 const sanitizeHtml = require('sanitize-html');
-const fs = require('fs');
-const path = require('path');
+const mongoSanitize = require('mongo-sanitize');
 
-// Load disallowed words from JSON file
-const disallowedWordsPath = path.join(__dirname, '..', 'disallowedWords.json');
-const disallowedWords = JSON.parse(fs.readFileSync(disallowedWordsPath, 'utf8'));
-
-function containsDisallowedWords(text) {
+function containsDisallowedWords(text, disallowedWords) {
     const lowerText = text.toLowerCase();
-    // Use word boundaries (\b) for exact match
     return disallowedWords.some(word => new RegExp(`\\b${word}\\b`).test(lowerText));
 }
 
@@ -19,56 +13,46 @@ module.exports = {
         .setName('create')
         .setDescription('Create a new trip')
         .addStringOption(option => option.setName('name').setDescription('Trip name').setRequired(true)),
-    async execute(interaction, { trips, activeTrips }) {
+    async execute(interaction, { trips, activeTrips, disallowedWords }) {
         let name = interaction.options.getString('name');
         
-        // Sterilize the input
+        if (name.length > 100) {
+            const embed = new EmbedBuilder()
+                .setColor('#FF0000')
+                .setTitle('Error')
+                .setDescription('Trip name must be 100 characters or less!');
+            return await interaction.editReply({ embeds: [embed] });
+        }
+
         name = sanitizeHtml(name, {
             allowedTags: [],
             allowedAttributes: {},
         }).trim();
 
-        // Check for disallowed words (exact match)
-        if (containsDisallowedWords(name)) {
+        if (containsDisallowedWords(name, disallowedWords)) {
             const embed = new EmbedBuilder()
                 .setColor('#FF0000')
                 .setTitle('Error')
-                .setDescription('Trip name contains inappropriate language and cannot be used.')
-                .setFooter({
-                    text: 'Your Japan Travel Buddy!',
-                    iconURL: interaction.client.user.displayAvatarURL()
-                })
-                .setTimestamp();
+                .setDescription('Trip name contains inappropriate language and cannot be used.');
             return await interaction.editReply({ embeds: [embed] });
         }
 
-        // Ensure name is not empty after sterilization
         if (!name) {
             const embed = new EmbedBuilder()
                 .setColor('#FF0000')
                 .setTitle('Error')
-                .setDescription('Trip name cannot be empty after sanitization!')
-                .setFooter({
-                    text: 'Your Japan Travel Buddy!',
-                    iconURL: interaction.client.user.displayAvatarURL()
-                })
-                .setTimestamp();
+                .setDescription('Trip name cannot be empty after sanitization!');
             return await interaction.editReply({ embeds: [embed] });
         }
 
-        const userId = interaction.user.id;
+        const userId = mongoSanitize(interaction.user.id);
         const userTripCount = await trips.countDocuments({ userId });
 
         if (userTripCount >= 10) {
             const embed = new EmbedBuilder()
                 .setColor('#FF0000')
                 .setTitle('Error')
-                .setDescription('You have reached the maximum limit of 10 trips!')
-                .setFooter({
-                    text: 'Your Japan Travel Buddy!',
-                    iconURL: interaction.client.user.displayAvatarURL()
-                })
-                .setTimestamp();
+                .setDescription('You have reached the maximum limit of 10 trips!');
             return await interaction.editReply({ embeds: [embed] });
         }
 
@@ -88,12 +72,7 @@ module.exports = {
             .setColor('#00FF00')
             .setTitle('Trip Created')
             .setDescription(`**${name}** has been created and set as your active trip!`)
-            .addFields({ name: 'Trip ID', value: tripId })
-            .setFooter({
-                text: 'Your Japan Travel Buddy!',
-                iconURL: interaction.client.user.displayAvatarURL()
-            })
-            .setTimestamp();
+            .addFields({ name: 'Trip ID', value: tripId });
         await interaction.editReply({ embeds: [embed] });
     },
 };

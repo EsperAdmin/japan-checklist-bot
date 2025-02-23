@@ -1,18 +1,18 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const mongoSanitize = require('mongo-sanitize');
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('stats')
         .setDescription('View bot statistics'),
     async execute(interaction, { trips, activeTrips }, client) {
-        const totalTripsCount = await trips.countDocuments();
         const activeTripsCount = await activeTrips.countDocuments();
         const uniqueUsers = (await trips.distinct('userId')).length;
         const guildCount = await client.shard.fetchClientValues('guilds.cache.size').then(results => results.reduce((acc, val) => acc + val, 0));
         const shardCount = client.shard.count;
         const currentShard = client.shard.ids[0];
         const latency = client.ws.ping;
-        const uptime = Math.floor((Date.now() - client.startTime) / 1000); // Seconds
+        const uptime = Math.floor((Date.now() - client.startTime) / 1000);
 
         const formatUptime = (seconds) => {
             const days = Math.floor(seconds / (3600 * 24));
@@ -26,7 +26,6 @@ module.exports = {
             .setTitle('Bot Statistics')
             .setThumbnail(client.user.displayAvatarURL())
             .addFields(
-                { name: 'Total Trips', value: `${totalTripsCount}`, inline: true },
                 { name: 'Active Trips', value: `${activeTripsCount}`, inline: true },
                 { name: 'Unique Trip Creators', value: `${uniqueUsers}`, inline: true },
                 { name: 'Servers', value: `${guildCount}`, inline: true },

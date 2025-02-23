@@ -1,4 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const mongoSanitize = require('mongo-sanitize');
+const { validate: uuidValidate } = require('uuid');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -7,45 +9,49 @@ module.exports = {
         .addStringOption(option => option.setName('name').setDescription('Trip name (optional)')),
     async execute(interaction, { trips, activeTrips }) {
         const name = interaction.options.getString('name');
-        const userId = interaction.user.id;
+        const userId = mongoSanitize(interaction.user.id);
         let trip;
 
         if (name) {
-            trip = await trips.findOne({ users: userId, name });
+            if (name.length > 100) {
+                const embed = new EmbedBuilder()
+                    .setColor('#FF0000')
+                    .setTitle('Error')
+                    .setDescription('Trip name must be 100 characters or less!');
+                return await interaction.editReply({ embeds: [embed] });
+            }
+            trip = await trips.findOne({ users: userId, name: mongoSanitize(name) });
         } else {
             const activeTripEntry = await activeTrips.findOne({ userId });
             if (!activeTripEntry) {
                 const embed = new EmbedBuilder()
                     .setColor('#FF0000')
                     .setTitle('Error')
-                    .setDescription('No active trip set! Use `/active` to set one.')
-                    .setFooter({
-                        text: 'Your Japan Travel Buddy!',
-                        iconURL: interaction.client.user.displayAvatarURL()
-                    })
-                    .setTimestamp();
+                    .setDescription('No active trip set! Use `/active` to set one.');
                 return await interaction.editReply({ embeds: [embed] });
             }
-            trip = await trips.findOne({ tripId: activeTripEntry.tripId, users: userId });
+            if (!uuidValidate(activeTripEntry.tripId)) {
+                const embed = new EmbedBuilder()
+                    .setColor('#FF0000')
+                    .setTitle('Error')
+                    .setDescription('Invalid trip ID format!');
+                return await interaction.editReply({ embeds: [embed] });
+            }
+            trip = await trips.findOne({ tripId: mongoSanitize(activeTripEntry.tripId), users: userId });
         }
 
         if (!trip) {
             const embed = new EmbedBuilder()
                 .setColor('#FF0000')
                 .setTitle('Error')
-                .setDescription('Trip not found or you don\'t have access!')
-                .setFooter({
-                    text: 'Your Japan Travel Buddy!',
-                    iconURL: interaction.client.user.displayAvatarURL()
-                })
-                .setTimestamp();
+                .setDescription('Trip not found or you don’t have access!');
             return await interaction.editReply({ embeds: [embed] });
         }
 
         const itemsPerPage = 10;
         const items = trip.items;
         const totalPages = Math.ceil(items.length / itemsPerPage);
-        const paginatedItems = items.slice(0, itemsPerPage).map(i => `${i.id}. ${i.name} ${i.complete ? '[✅]' : '[]'}`).join('\n') || 'None';
+        const paginatedItems = items.slice(0, itemsPerPage).map(i => `${i.id}. ${i.name} ${i.complete ? '[✓]' : '[ ]'}`).join('\n') || 'None';
         const users = trip.users.map(u => `<@${u}>`).join(', ');
 
         const embed = new EmbedBuilder()
@@ -56,12 +62,7 @@ module.exports = {
                 { name: 'Users', value: users, inline: true },
                 { name: 'Items', value: paginatedItems },
                 { name: 'Page', value: `1/${totalPages}`, inline: true }
-            )
-            .setFooter({
-                text: 'Your Japan Travel Buddy!',
-                iconURL: interaction.client.user.displayAvatarURL()
-            })
-            .setTimestamp();
+            );
 
         const buttons = new ActionRowBuilder()
             .addComponents(

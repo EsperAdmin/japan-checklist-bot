@@ -1,111 +1,65 @@
-Welcome to **Japan Checklist**, a simple discord bot for creating and managing a checklist for going to Japan!
+```markdown
+# Checklist Bot
 
-## Table of Contents
-- [Installation](#installation)
-- [Usage](#usage)
-- [Features](#features)
-- [Contributing](#contributing)
-- [License](#license)
+![Checklist Bot Banner](https://via.placeholder.com/800x200.png?text=Checklist+Bot) <!-- Replace with a real banner if available -->
 
----
-
-## Installation
-// ignore this for now, we'll be adding this later on.
-
-To get started with the Japan Trip Planner bot, follow these steps:
-
-1. **Clone the repository**:
-   ```bash
-   git clone https://github.com/yourusername/japan-trip-planner.git
-   ```
-
-2. **Install dependencies**:
-   ```bash
-   cd japan-trip-planner
-   npm install
-   ```
-
-3. **Set up your Discord bot**:
-   - Create a new application on the [Discord Developer Portal](https://discord.com/developers/applications).
-   - Generate a bot token and add it to your `.env` file.
-
-4. **Run the bot**:
-   ```bash
-   npm start
-   ```
-
----
-
-## Usage
-
-Here's how you can use Japan Trip Planner in your Discord channel:
-
-- **Create a new checklist**: `/create <trip-name>`\
-  Example: `/create My Japan Trip`
-  
-- **Add an item to your checklist**: `/add <item>`\
-  Example: `/add Get passport.`
-
-- **Remove an item from your checklist**: `/remove <index>` \
-  Example: `/remove 2` (where 2 is the index of the item you want to remove)
-
-- **View your current trip active**: `/view`\
-  Example: `/view`
-
-- **View a specific trip**: `/view <trip-name>`\
-  Example: `/view My Japan Trip`
-
-- **list all trips**: `/list`\
-  Example: `/list`
-
-- **Delete a trip**: `/delete <trip-ID>`\
-  Example: `/delete 1`
-
-- **add users to your trip**: `/adduser <@user> <TripID>`\
-  Example: `/adduser @user 1`
-
-- **remove users from your trip**: `/removeuser <@user>`\
-  Example: `/removeuser @user`
-  
-- **Complete an item**: `/complete <index>`\
-  Example: `/complete 1`
-
-- **Uncomplete an item**: `/uncomplete <index>`\
-  Example: `/uncomplete 2`
-
-
----
+Welcome to **Checklist Bot**, a versatile Discord bot designed to help you manage trip checklists with ease! Whether you're planning a vacation, a road trip, or any adventure, this bot lets you create, edit, and share trip checklists right within your Discord server. Built with **Grok 3** by xAI, this open-source project combines powerful functionality with a user-friendly experience.
 
 ## Features
 
-Japan Trip Planner offers these handy features:
+- **Trip Management**: Create up to 10 trips per user, each with a unique UUID.
+- **Checklist Items**: Add up to 25 items per trip, mark them as complete/incomplete, and remove them as needed.
+- **Collaboration**: Invite others to join your trips via a request/accept system.
+- **Pagination**: View trips, items, and more with easy-to-navigate pages.
+- **Owner Tools**: Bot owner can manage all trips and blacklist users.
+- **Fun Extra**: Get random Japan images with `/japan`.
+- **Safety**: Filters out inappropriate language from trip and item names.
+- **Stats**: Check bot usage stats like active trips and server count.
 
-- **Create Custom Checklists**: Tailor your trip preparation with specific categories like "Travel Essentials," "Cultural Experiences," or "Food Adventures."
-  
-- **Easy Item Management**: Add, remove, and complete items directly from Discord.
+## How to Use
 
-- **Multiple Lists Support**: Organize different aspects of your trip into separate checklists for better clarity.
+### Commands
+Run these slash commands in your Discord server:
 
-- **User-Friendly Commands**: Simple and intuitive commands make managing your checklist a breeze.
+| Command           | Description                                           | Example Usage                  |
+|-------------------|-------------------------------------------------------|--------------------------------|
+| `/active`         | Set a trip as your active trip using its ID.         | `/active trip_id:<uuid>`       |
+| `/add`            | Add an item to your active trip (max 25).            | `/add item:Sunscreen`          |
+| `/adduser`        | Send a request to add a user to your active trip.    | `/adduser user:@Friend`        |
+| `/alltrips`       | Owner-only: View/manage all trips.                   | `/alltrips trip_id:<uuid>`     |
+| `/blacklist`      | Owner-only: Add/remove users from blacklist.         | `/blacklist action:add user:@User` |
+| `/blacklistview`  | Owner-only: View blacklisted users.                  | `/blacklistview`               |
+| `/complete`       | Mark an item as complete in your active trip.        | `/complete item_id:1`          |
+| `/create`         | Create a new trip (max 10) and set it as active.     | `/create name:Beach Trip`      |
+| `/delete`         | Delete a trip by ID (creator only).                  | `/delete trip_id:<uuid>`       |
+| `/help`           | View all commands with details (paginated).          | `/help`                        |
+| `/japan`          | Get a random image of Japan.                         | `/japan`                       |
+| `/list`           | List all your trips with pagination.                 | `/list`                        |
+| `/remove`         | Remove an item from your active trip.                | `/remove item_id:1`            |
+| `/removeuser`     | Remove a user from your active trip.                 | `/removeuser user:@Friend`     |
+| `/requests`       | View and accept/decline trip join requests.          | `/requests`                    |
+| `/stats`          | View bot statistics.                                 | `/stats`                       |
+| `/uncomplete`     | Mark an item as incomplete in your active trip.      | `/uncomplete item_id:1`        |
+| `/view`           | View your active trip or a specific trip by name.    | `/view name:Beach Trip`        |
 
----
+### Example Workflow
+1. **Create a Trip**: `/create name:Road Trip`
+2. **Add Items**: `/add item:Snacks`, `/add item:Map`
+3. **Invite a Friend**: `/adduser user:@Friend`
+4. **Friend Accepts**: Friend runs `/requests` and clicks "Accept"
+5. **Manage Checklist**: `/complete item_id:1`, `/view`
 
-## Contributing
+## Setup Instructions
 
-Contributions are welcome! If you'd like to enhance the bot or fix any issues, please follow these guidelines:
+### Prerequisites
+- **Node.js**: v16 or higher
+- **npm**: For package installation
+- **MongoDB**: A running instance (local or cloud, e.g., MongoDB Atlas)
+- **Discord Bot Token**: Create a bot at [Discord Developer Portal](https://discord.com/developers/applications)
+- **Unsplash API Key**: For the `/japan` command (get from [Unsplash Developers](https://unsplash.com/developers))
 
-1. Fork the repository.
-2. Create a new branch for your changes.
-3. Commit your changes with clear, concise messages.
-4. Push your branch to GitHub.
-5. Open a Pull Request against the main branch.
-
----
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-Have fun planning your trip! 🌸
+### Installation
+1. **Clone the Repository**:
+   ```bash
+   git clone <repository-url>
+   cd checklist-bot

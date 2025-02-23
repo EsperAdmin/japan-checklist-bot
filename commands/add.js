@@ -1,15 +1,10 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const sanitizeHtml = require('sanitize-html');
-const fs = require('fs');
-const path = require('path');
+const mongoSanitize = require('mongo-sanitize');
+const { validate: uuidValidate } = require('uuid');
 
-// Load disallowed words from JSON file
-const disallowedWordsPath = path.join(__dirname, '..', 'disallowedWords.json');
-const disallowedWords = JSON.parse(fs.readFileSync(disallowedWordsPath, 'utf8'));
-
-function containsDisallowedWords(text) {
+function containsDisallowedWords(text, disallowedWords) {
     const lowerText = text.toLowerCase();
-    // Use word boundaries (\b) for exact match
     return disallowedWords.some(word => new RegExp(`\\b${word}\\b`).test(lowerText));
 }
 
@@ -18,69 +13,63 @@ module.exports = {
         .setName('add')
         .setDescription('Add an item to your active trip')
         .addStringOption(option => option.setName('item').setDescription('Item name').setRequired(true)),
-    async execute(interaction, { trips, activeTrips }) {
+    async execute(interaction, { trips, activeTrips, disallowedWords }) {
         let item = interaction.options.getString('item');
 
-        // Sterilize the input
+        if (item.length > 100) {
+            const embed = new EmbedBuilder()
+                .setColor('#FF0000')
+                .setTitle('Error')
+                .setDescription('Item name must be 100 characters or less!');
+            return await interaction.editReply({ embeds: [embed] });
+        }
+
         item = sanitizeHtml(item, {
             allowedTags: [],
             allowedAttributes: {},
         }).trim();
 
-        // Check for disallowed words (exact match)
-        if (containsDisallowedWords(item)) {
+        if (containsDisallowedWords(item, disallowedWords)) {
             const embed = new EmbedBuilder()
                 .setColor('#FF0000')
                 .setTitle('Error')
-                .setDescription('Item name contains inappropriate language and cannot be used.')
-                .setFooter({
-                    text: 'Your Japan Travel Buddy!',
-                    iconURL: interaction.client.user.displayAvatarURL()
-                })
-                .setTimestamp();
+                .setDescription('Item name contains inappropriate language and cannot be used.');
             return await interaction.editReply({ embeds: [embed] });
         }
 
-        // Ensure item is not empty after sterilization
         if (!item) {
             const embed = new EmbedBuilder()
                 .setColor('#FF0000')
                 .setTitle('Error')
-                .setDescription('Item name cannot be empty after sanitization!')
-                .setFooter({
-                    text: 'Your Japan Travel Buddy!',
-                    iconURL: interaction.client.user.displayAvatarURL()
-                })
-                .setTimestamp();
+                .setDescription('Item name cannot be empty after sanitization!');
             return await interaction.editReply({ embeds: [embed] });
         }
 
-        const userId = interaction.user.id;
+        const userId = mongoSanitize(interaction.user.id);
         const activeTripEntry = await activeTrips.findOne({ userId });
         if (!activeTripEntry) {
             const embed = new EmbedBuilder()
                 .setColor('#FF0000')
                 .setTitle('Error')
-                .setDescription('No active trip set! Use `/active` to set one.')
-                .setFooter({
-                    text: 'Your Japan Travel Buddy!',
-                    iconURL: interaction.client.user.displayAvatarURL()
-                })
-                .setTimestamp();
+                .setDescription('No active trip set! Use `/active` to set one.');
             return await interaction.editReply({ embeds: [embed] });
         }
 
-        const activeTrip = await trips.findOne({ tripId: activeTripEntry.tripId, users: userId });
+        if (!uuidValidate(activeTripEntry.tripId)) {
+            const embed = new EmbedBuilder()
+                .setColor('#FF0000')
+                .setTitle('Error')
+                .setDescription('Invalid trip ID format!');
+            return await interaction.editReply({ embeds: [embed] });
+        }
+
+        const sanitizedTripId = mongoSanitize(activeTripEntry.tripId);
+        const activeTrip = await trips.findOne({ tripId: sanitizedTripId, users: userId });
         if (!activeTrip) {
             const embed = new EmbedBuilder()
                 .setColor('#FF0000')
                 .setTitle('Error')
-                .setDescription('Active trip not found or you don\'t have access!')
-                .setFooter({
-                    text: 'Your Japan Travel Buddy!',
-                    iconURL: interaction.client.user.displayAvatarURL()
-                })
-                .setTimestamp();
+                .setDescription('Active trip not found or you don’t have access!');
             return await interaction.editReply({ embeds: [embed] });
         }
 
@@ -89,28 +78,18 @@ module.exports = {
             const embed = new EmbedBuilder()
                 .setColor('#FF0000')
                 .setTitle('Error')
-                .setDescription('Maximum item limit of 25 reached for this trip!')           
-                .setFooter({
-                    text: 'Your Japan Travel Buddy!',
-                    iconURL: interaction.client.user.displayAvatarURL()
-                })
-                .setTimestamp();
+                .setDescription('Maximum item limit of 25 reached for this trip!');
             return await interaction.editReply({ embeds: [embed] });
         }
 
         const itemId = items.length + 1;
         items.push({ id: itemId, name: item, complete: false });
-        await trips.updateOne({ tripId: activeTrip.tripId }, { $set: { items } });
+        await trips.updateOne({ tripId: sanitizedTripId }, { $set: { items } });
 
         const embed = new EmbedBuilder()
             .setColor('#00FF00')
             .setTitle('Item Added')
-            .setDescription(`Added **${item}** as item #${itemId} to **${activeTrip.name}**!`)
-            .setFooter({
-                text: 'Your Japan Travel Buddy!',
-                iconURL: interaction.client.user.displayAvatarURL()
-            })
-            .setTimestamp();
+            .setDescription(`Added **${item}** as item #${itemId} to **${activeTrip.name}**!`);
         await interaction.editReply({ embeds: [embed] });
     },
 };
