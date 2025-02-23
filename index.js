@@ -94,7 +94,12 @@ client.on('interactionCreate', async interaction => {
         const embed = new EmbedBuilder()
             .setColor('#FF0000')
             .setTitle('Error')
-            .setDescription('You cannot use this bot at this time.');
+            .setDescription('You cannot use this bot at this time.')
+            .setFooter({
+                text: 'Your japan travel companion!',
+                iconURL: interaction.client.user.displayAvatarURL()
+            })
+            .setTimestamp();
         return interaction.reply({ embeds: [embed], ephemeral: true });
     }
 
@@ -109,7 +114,12 @@ client.on('interactionCreate', async interaction => {
             const embed = new EmbedBuilder()
                 .setColor('#FF0000')
                 .setTitle('Rate Limit Exceeded')
-                .setDescription('Slow down! Too many commands.');
+                .setDescription('Slow down! Too many commands.')
+                .setFooter({
+                    text: 'Your japan travel companion!',
+                    iconURL: interaction.client.user.displayAvatarURL()
+                })
+                .setTimestamp();
             return await interaction.reply({ embeds: [embed], ephemeral: true });
         }
 
@@ -122,7 +132,12 @@ client.on('interactionCreate', async interaction => {
             const embed = new EmbedBuilder()
                 .setColor('#FF0000')
                 .setTitle('Error')
-                .setDescription(error.name === 'MongoError' ? 'Database issue, try later.' : 'Command failed.');
+                .setDescription(error.name === 'MongoError' ? 'Database issue, try later.' : 'Command failed.')
+                .setFooter({
+                    text: 'Your japan travel companion!',
+                    iconURL: interaction.client.user.displayAvatarURL()
+                })
+                .setTimestamp();
             await interaction.editReply({ embeds: [embed] });
         }
     } else if (interaction.isButton()) {
@@ -136,7 +151,12 @@ client.on('interactionCreate', async interaction => {
                 const embed = new EmbedBuilder()
                     .setColor('#FF0000')
                     .setTitle('Error')
-                    .setDescription('Trip not found or you don’t have permission!');
+                    .setDescription('Trip not found or you don’t have permission!')
+                    .setFooter({
+                        text: 'Your japan travel companion!',
+                        iconURL: interaction.client.user.displayAvatarURL()
+                    })
+                    .setTimestamp();
                 return await interaction.update({ embeds: [embed], components: [] });
             }
 
@@ -161,7 +181,12 @@ client.on('interactionCreate', async interaction => {
                     { name: 'Users', value: users, inline: true },
                     { name: 'Items', value: paginatedItems },
                     { name: 'Page', value: `${newPage}/${totalPages}`, inline: true }
-                );
+                )
+                .setFooter({
+                    text: 'Your japan travel companion!',
+                    iconURL: interaction.client.user.displayAvatarURL()
+                })
+                .setTimestamp();
 
             const buttons = new ActionRowBuilder()
                 .addComponents(
@@ -177,7 +202,12 @@ client.on('interactionCreate', async interaction => {
                 const embed = new EmbedBuilder()
                     .setColor('#FF0000')
                     .setTitle('Error')
-                    .setDescription('Request not found or not for you!');
+                    .setDescription('Request not found or not for you!')
+                    .setFooter({
+                        text: 'Your japan travel companion!',
+                        iconURL: interaction.client.user.displayAvatarURL()
+                    })
+                    .setTimestamp();
                 return await interaction.update({ embeds: [embed], components: [] });
             }
 
@@ -189,14 +219,24 @@ client.on('interactionCreate', async interaction => {
                 const embed = new EmbedBuilder()
                     .setColor('#00FF00')
                     .setTitle('Request Accepted')
-                    .setDescription(`You’ve joined **${trip.name}**!`);
+                    .setDescription(`You’ve joined **${trip.name}**!`)
+                    .setFooter({
+                        text: 'Your japan travel companion!',
+                        iconURL: interaction.client.user.displayAvatarURL()
+                    })
+                    .setTimestamp();
                 await interaction.update({ embeds: [embed], components: [] });
             } else if (action === 'decline') {
                 await requests.deleteOne({ requestId: id });
                 const embed = new EmbedBuilder()
                     .setColor('#FF0000')
                     .setTitle('Request Declined')
-                    .setDescription(`You’ve declined to join **${trip.name}**.`);
+                    .setDescription(`You’ve declined to join **${trip.name}**.`)
+                    .setFooter({
+                        text: 'Your japan travel companion!',
+                        iconURL: interaction.client.user.displayAvatarURL()
+                    })
+                    .setTimestamp();
                 await interaction.update({ embeds: [embed], components: [] });
             }
         } else if (type === 'list') {
@@ -222,7 +262,12 @@ client.on('interactionCreate', async interaction => {
                 .setColor('#3498DB')
                 .setTitle('Your Trips')
                 .setDescription(paginatedTrips)
-                .addFields({ name: 'Page', value: `${newPage}/${totalPages}`, inline: true });
+                .addFields({ name: 'Page', value: `${newPage}/${totalPages}`, inline: true })
+                .setFooter({
+                    text: 'Your japan travel companion!',
+                    iconURL: interaction.client.user.displayAvatarURL()
+                })
+                .setTimestamp();
 
             const buttons = new ActionRowBuilder()
                 .addComponents(
@@ -237,7 +282,12 @@ client.on('interactionCreate', async interaction => {
                 const embed = new EmbedBuilder()
                     .setColor('#FF0000')
                     .setTitle('Error')
-                    .setDescription('Owner-only interaction!');
+                    .setDescription('Owner-only interaction!')
+                    .setFooter({
+                        text: 'Your japan travel companion!',
+                        iconURL: interaction.client.user.displayAvatarURL()
+                    })
+                    .setTimestamp();
                 return await interaction.update({ embeds: [embed], components: [] });
             }
 
@@ -288,7 +338,12 @@ client.on('interactionCreate', async interaction => {
                     .setColor('#FF0000')
                     .setTitle('Blacklisted Users')
                     .setDescription(paginatedUsers)
-                    .addFields({ name: 'Page', value: `${newPage}/${totalPages}`, inline: true });
+                    .addFields({ name: 'Page', value: `${newPage}/${totalPages}`, inline: true })
+                    .setFooter({
+                        text: 'Your japan travel companion!',
+                        iconURL: interaction.client.user.displayAvatarURL()
+                    })
+                    .setTimestamp();
 
                 const buttons = new ActionRowBuilder()
                     .addComponents(
@@ -334,7 +389,7 @@ client.on('interactionCreate', async interaction => {
                 .setDescription(commandList)
                 .addFields({ name: 'Page', value: `${newPage}/${totalPages}`, inline: true })
                 .setFooter({
-                    text: 'This is an open-source Discord bot created with Grok 3 by xAI.',
+                    text: 'Your japan travel companion!',
                     iconURL: interaction.client.user.displayAvatarURL()
                 })
                 .setTimestamp();
@@ -369,7 +424,12 @@ client.on('interactionCreate', async interaction => {
                 const embed = new EmbedBuilder()
                     .setColor('#FF0000')
                     .setTitle('Error')
-                    .setDescription('Trip not found or you’re not the creator!');
+                    .setDescription('Trip not found or you’re not the creator!')
+                    .setFooter({
+                        text: 'Your japan travel companion!',
+                        iconURL: interaction.client.user.displayAvatarURL()
+                    })
+                    .setTimestamp();
                 return await interaction.update({ embeds: [embed], components: [] });
             }
 
@@ -380,7 +440,12 @@ client.on('interactionCreate', async interaction => {
             const embed = new EmbedBuilder()
                 .setColor('#00FF00')
                 .setTitle('Trip Deleted')
-                .setDescription(`Trip **${trip.name}** (ID: ${tripId}) has been deleted!`);
+                .setDescription(`Trip **${trip.name}** (ID: ${tripId}) has been deleted!`)
+                .setFooter({
+                    text: 'Your japan travel companion!',
+                    iconURL: interaction.client.user.displayAvatarURL()
+                })
+                .setTimestamp();
             await interaction.update({ embeds: [embed], components: [] });
         } 
     } 

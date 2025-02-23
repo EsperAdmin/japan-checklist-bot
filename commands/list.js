@@ -21,7 +21,12 @@ module.exports = {
             .setColor('#3498DB')
             .setTitle('Your Trips')
             .setDescription(paginatedTrips)
-            .addFields({ name: 'Page', value: `1/${totalPages}`, inline: true });
+            .addFields({ name: 'Page', value: `1/${totalPages}`, inline: true })
+            .setFooter({
+                text: 'Your japan travel companion!',
+                iconURL: interaction.client.user.displayAvatarURL()
+            })
+            .setTimestamp();
 
         const buttons = new ActionRowBuilder()
             .addComponents(

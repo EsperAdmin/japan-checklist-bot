@@ -13,7 +13,12 @@ module.exports = {
             const embed = new EmbedBuilder()
                 .setColor('#FF0000')
                 .setTitle('Error')
-                .setDescription('Invalid trip ID format!');
+                .setDescription('Invalid trip ID format!')
+                .setFooter({
+                    text: 'Your japan travel companion!',
+                    iconURL: interaction.client.user.displayAvatarURL()
+                })
+                .setTimestamp();
             return await interaction.editReply({ embeds: [embed] });
         }
 
@@ -24,7 +29,12 @@ module.exports = {
             const embed = new EmbedBuilder()
                 .setColor('#FF0000')
                 .setTitle('Error')
-                .setDescription('Trip not found or you don’t have access!');
+                .setDescription('Trip not found or you don’t have access!')
+                .setFooter({
+                    text: 'Your japan travel companion!',
+                    iconURL: interaction.client.user.displayAvatarURL()
+                })
+                .setTimestamp();
             return await interaction.editReply({ embeds: [embed] });
         }
 
@@ -34,7 +44,12 @@ module.exports = {
         const embed = new EmbedBuilder()
             .setColor('#00FF00')
             .setTitle('Active Trip Set')
-            .setDescription(`**${trip.name}** is now your active trip!`);
+            .setDescription(`**${trip.name}** is now your active trip!`)
+            .setFooter({
+                text: 'Your japan travel companion!',
+                iconURL: interaction.client.user.displayAvatarURL()
+            })
+            .setTimestamp();
         await interaction.editReply({ embeds: [embed] });
     },
 };

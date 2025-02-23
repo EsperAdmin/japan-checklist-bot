@@ -57,7 +57,12 @@ module.exports = {
                 const embed = new EmbedBuilder()
                     .setColor('#FF0000')
                     .setTitle('Error')
-                    .setDescription('Item ID must be a positive integer!');
+                    .setDescription('Item ID must be a positive integer!')
+                    .setFooter({
+                        text: 'Your japan travel companion!',
+                        iconURL: interaction.client.user.displayAvatarURL()
+                    })
+                    .setTimestamp();
                 return await interaction.editReply({ embeds: [embed] });
             }
 
@@ -66,7 +71,12 @@ module.exports = {
                 const embed = new EmbedBuilder()
                     .setColor('#FF0000')
                     .setTitle('Error')
-                    .setDescription('No active trip set! Use `/active` to set one.');
+                    .setDescription('No active trip set! Use `/active` to set one.')
+                    .setFooter({
+                        text: 'Your japan travel companion!',
+                        iconURL: interaction.client.user.displayAvatarURL()
+                    })
+                    .setTimestamp();
                 return await interaction.editReply({ embeds: [embed] });
             }
 
@@ -74,7 +84,12 @@ module.exports = {
                 const embed = new EmbedBuilder()
                     .setColor('#FF0000')
                     .setTitle('Error')
-                    .setDescription('Invalid trip ID format!');
+                    .setDescription('Invalid trip ID format!')
+                    .setFooter({
+                        text: 'Your japan travel companion!',
+                        iconURL: interaction.client.user.displayAvatarURL()
+                    })
+                    .setTimestamp();
                 return await interaction.editReply({ embeds: [embed] });
             }
 
@@ -84,7 +99,12 @@ module.exports = {
                 const embed = new EmbedBuilder()
                     .setColor('#FF0000')
                     .setTitle('Error')
-                    .setDescription('Active trip not found or you don’t have access!');
+                    .setDescription('Active trip not found or you don’t have access!')
+                    .setFooter({
+                        text: 'Your japan travel companion!',
+                        iconURL: interaction.client.user.displayAvatarURL()
+                    })
+                    .setTimestamp();
                 return await interaction.editReply({ embeds: [embed] });
             }
 
@@ -94,7 +114,12 @@ module.exports = {
                 const embed = new EmbedBuilder()
                     .setColor('#FF0000')
                     .setTitle('Error')
-                    .setDescription(`Item #${itemId} not found!`);
+                    .setDescription(`Item #${itemId} not found!`)
+                    .setFooter({
+                        text: 'Your japan travel companion!',
+                        iconURL: interaction.client.user.displayAvatarURL()
+                    })
+                    .setTimestamp();
                 return await interaction.editReply({ embeds: [embed] });
             }
 
@@ -112,7 +137,12 @@ module.exports = {
                 const embed = new EmbedBuilder()
                     .setColor('#FF0000')
                     .setTitle('Error')
-                    .setDescription('Item ID must be a positive integer!');
+                    .setDescription('Item ID must be a positive integer!')
+                    .setFooter({
+                        text: 'Your japan travel companion!',
+                        iconURL: interaction.client.user.displayAvatarURL()
+                    })
+                    .setTimestamp();
                 return await interaction.editReply({ embeds: [embed] });
             }
 
@@ -121,7 +151,12 @@ module.exports = {
                 const embed = new EmbedBuilder()
                     .setColor('#FF0000')
                     .setTitle('Error')
-                    .setDescription('No active trip set! Use `/active` to set one.');
+                    .setDescription('No active trip set! Use `/active` to set one.')
+                    .setFooter({
+                        text: 'Your japan travel companion!',
+                        iconURL: interaction.client.user.displayAvatarURL()
+                    })
+                    .setTimestamp();
                 return await interaction.editReply({ embeds: [embed] });
             }
 
@@ -129,7 +164,12 @@ module.exports = {
                 const embed = new EmbedBuilder()
                     .setColor('#FF0000')
                     .setTitle('Error')
-                    .setDescription('Invalid trip ID format!');
+                    .setDescription('Invalid trip ID format!')
+                    .setFooter({
+                        text: 'Your japan travel companion!',
+                        iconURL: interaction.client.user.displayAvatarURL()
+                    })
+                    .setTimestamp();
                 return await interaction.editReply({ embeds: [embed] });
             }
 
@@ -139,7 +179,12 @@ module.exports = {
                 const embed = new EmbedBuilder()
                     .setColor('#FF0000')
                     .setTitle('Error')
-                    .setDescription('Active trip not found or you don’t have access!');
+                    .setDescription('Active trip not found or you don’t have access!')
+                    .setFooter({
+                        text: 'Your japan travel companion!',
+                        iconURL: interaction.client.user.displayAvatarURL()
+                    })
+                    .setTimestamp();
                 return await interaction.editReply({ embeds: [embed] });
             }
 
@@ -148,7 +193,12 @@ module.exports = {
                 const embed = new EmbedBuilder()
                     .setColor('#FF0000')
                     .setTitle('Error')
-                    .setDescription(`Item #${itemId} not found!`);
+                    .setDescription(`Item #${itemId} not found!`)
+                    .setFooter({
+                        text: 'Your japan travel companion!',
+                        iconURL: interaction.client.user.displayAvatarURL()
+                    })
+                    .setTimestamp();
                 return await interaction.editReply({ embeds: [embed] });
             }
 
@@ -158,7 +208,12 @@ module.exports = {
             const embed = new EmbedBuilder()
                 .setColor('#00FF00')
                 .setTitle('Item Removed')
-                .setDescription(`Removed item #${itemId} from **${activeTrip.name}**!`);
+                .setDescription(`Removed item #${itemId} from **${activeTrip.name}**!`)
+                .setFooter({
+                    text: 'Your japan travel companion!',
+                    iconURL: interaction.client.user.displayAvatarURL()
+                })
+                .setTimestamp();
             await interaction.editReply({ embeds: [embed] });
         } else if (subcommand === 'uncomplete') {
             const itemId = interaction.options.getInteger('item_id');
@@ -166,7 +221,12 @@ module.exports = {
                 const embed = new EmbedBuilder()
                     .setColor('#FF0000')
                     .setTitle('Error')
-                    .setDescription('Item ID must be a positive integer!');
+                    .setDescription('Item ID must be a positive integer!')
+                    .setFooter({
+                        text: 'Your japan travel companion!',
+                        iconURL: interaction.client.user.displayAvatarURL()
+                    })
+                    .setTimestamp();
                 return await interaction.editReply({ embeds: [embed] });
             }
 
@@ -175,7 +235,12 @@ module.exports = {
                 const embed = new EmbedBuilder()
                     .setColor('#FF0000')
                     .setTitle('Error')
-                    .setDescription('No active trip set! Use `/active` to set one.');
+                    .setDescription('No active trip set! Use `/active` to set one.')
+                    .setFooter({
+                        text: 'Your japan travel companion!',
+                        iconURL: interaction.client.user.displayAvatarURL()
+                    })
+                    .setTimestamp();
                 return await interaction.editReply({ embeds: [embed] });
             }
 
@@ -183,7 +248,12 @@ module.exports = {
                 const embed = new EmbedBuilder()
                     .setColor('#FF0000')
                     .setTitle('Error')
-                    .setDescription('Invalid trip ID format!');
+                    .setDescription('Invalid trip ID format!')
+                    .setFooter({
+                        text: 'Your japan travel companion!',
+                        iconURL: interaction.client.user.displayAvatarURL()
+                    })
+                    .setTimestamp();
                 return await interaction.editReply({ embeds: [embed] });
             }
 
@@ -193,7 +263,12 @@ module.exports = {
                 const embed = new EmbedBuilder()
                     .setColor('#FF0000')
                     .setTitle('Error')
-                    .setDescription('Active trip not found or you don’t have access!');
+                    .setDescription('Active trip not found or you don’t have access!')
+                    .setFooter({
+                        text: 'Your japan travel companion!',
+                        iconURL: interaction.client.user.displayAvatarURL()
+                    })
+                    .setTimestamp();
                 return await interaction.editReply({ embeds: [embed] });
             }
 
@@ -203,7 +278,12 @@ module.exports = {
                 const embed = new EmbedBuilder()
                     .setColor('#FF0000')
                     .setTitle('Error')
-                    .setDescription(`Item #${itemId} not found!`);
+                    .setDescription(`Item #${itemId} not found!`)
+                    .setFooter({
+                        text: 'Your japan travel companion!',
+                        iconURL: interaction.client.user.displayAvatarURL()
+                    })
+                    .setTimestamp();
                 return await interaction.editReply({ embeds: [embed] });
             }
 
@@ -213,7 +293,12 @@ module.exports = {
             const embed = new EmbedBuilder()
                 .setColor('#00FF00')
                 .setTitle('Item Uncompleted')
-                .setDescription(`Marked item #${itemId} (**${item.name}**) as incomplete in **${activeTrip.name}**!`);
+                .setDescription(`Marked item #${itemId} (**${item.name}**) as incomplete in **${activeTrip.name}**!`)
+                .setFooter({
+                    text: 'Your japan travel companion!',
+                    iconURL: interaction.client.user.displayAvatarURL()
+                })
+                .setTimestamp();
             await interaction.editReply({ embeds: [embed] });
         } else if (subcommand === 'adduser') {
             const targetUser = interaction.options.getUser('user');
@@ -222,7 +307,12 @@ module.exports = {
                 const embed = new EmbedBuilder()
                     .setColor('#FF0000')
                     .setTitle('Error')
-                    .setDescription('No active trip set! Use `/active` to set one.');
+                    .setDescription('No active trip set! Use `/active` to set one.')
+                    .setFooter({
+                        text: 'Your japan travel companion!',
+                        iconURL: interaction.client.user.displayAvatarURL()
+                    })
+                    .setTimestamp();
                 return await interaction.editReply({ embeds: [embed] });
             }
 
@@ -230,7 +320,12 @@ module.exports = {
                 const embed = new EmbedBuilder()
                     .setColor('#FF0000')
                     .setTitle('Error')
-                    .setDescription('Invalid trip ID format!');
+                    .setDescription('Invalid trip ID format!')
+                    .setFooter({
+                        text: 'Your japan travel companion!',
+                        iconURL: interaction.client.user.displayAvatarURL()
+                    })
+                    .setTimestamp();
                 return await interaction.editReply({ embeds: [embed] });
             }
 
@@ -240,7 +335,12 @@ module.exports = {
                 const embed = new EmbedBuilder()
                     .setColor('#FF0000')
                     .setTitle('Error')
-                    .setDescription('Active trip not found or you don’t have access!');
+                    .setDescription('Active trip not found or you don’t have access!')
+                    .setFooter({
+                        text: 'Your japan travel companion!',
+                        iconURL: interaction.client.user.displayAvatarURL()
+                    })
+                    .setTimestamp();
                 return await interaction.editReply({ embeds: [embed] });
             }
 
@@ -253,7 +353,12 @@ module.exports = {
                 const embed = new EmbedBuilder()
                     .setColor('#FF0000')
                     .setTitle('Error')
-                    .setDescription('The active trip name contains inappropriate language and cannot be shared.');
+                    .setDescription('The active trip name contains inappropriate language and cannot be shared.')
+                    .setFooter({
+                        text: 'Your japan travel companion!',
+                        iconURL: interaction.client.user.displayAvatarURL()
+                    })
+                    .setTimestamp();
                 return await interaction.editReply({ embeds: [embed] });
             }
 
@@ -261,7 +366,12 @@ module.exports = {
                 const embed = new EmbedBuilder()
                     .setColor('#FFA500')
                     .setTitle('Warning')
-                    .setDescription(`<@${targetUser.id}> is already in **${sanitizedTripName}**!`);
+                    .setDescription(`<@${targetUser.id}> is already in **${sanitizedTripName}**!`)
+                    .setFooter({
+                        text: 'Your japan travel companion!',
+                        iconURL: interaction.client.user.displayAvatarURL()
+                    })
+                    .setTimestamp();
                 return await interaction.editReply({ embeds: [embed] });
             }
 
@@ -276,7 +386,12 @@ module.exports = {
             const embed = new EmbedBuilder()
                 .setColor('#00FF00')
                 .setTitle('Request Sent')
-                .setDescription(`Sent a request to <@${targetUser.id}> to join **${sanitizedTripName}**!\nThey can accept with \`/requests\`.`);
+                .setDescription(`Sent a request to <@${targetUser.id}> to join **${sanitizedTripName}**!\nThey can accept with \`/requests\`.`)
+                .setFooter({
+                    text: 'Your japan travel companion!',
+                    iconURL: interaction.client.user.displayAvatarURL()
+                })
+                .setTimestamp();
             await interaction.editReply({ embeds: [embed] });
         } else if (subcommand === 'removeuser') {
             const targetUser = interaction.options.getUser('user');
@@ -286,7 +401,12 @@ module.exports = {
                 const embed = new EmbedBuilder()
                     .setColor('#FF0000')
                     .setTitle('Error')
-                    .setDescription('No active trip set! Use `/active` to set one.');
+                    .setDescription('No active trip set! Use `/active` to set one.')
+                    .setFooter({
+                        text: 'Your japan travel companion!',
+                        iconURL: interaction.client.user.displayAvatarURL()
+                    })
+                    .setTimestamp();
                 return await interaction.editReply({ embeds: [embed] });
             }
 
@@ -294,7 +414,12 @@ module.exports = {
                 const embed = new EmbedBuilder()
                     .setColor('#FF0000')
                     .setTitle('Error')
-                    .setDescription('Invalid trip ID format!');
+                    .setDescription('Invalid trip ID format!')
+                    .setFooter({
+                        text: 'Your japan travel companion!',
+                        iconURL: interaction.client.user.displayAvatarURL()
+                    })
+                    .setTimestamp();
                 return await interaction.editReply({ embeds: [embed] });
             }
 
@@ -304,7 +429,12 @@ module.exports = {
                 const embed = new EmbedBuilder()
                     .setColor('#FF0000')
                     .setTitle('Error')
-                    .setDescription('Active trip not found or you don’t have access!');
+                    .setDescription('Active trip not found or you don’t have access!')
+                    .setFooter({
+                        text: 'Your japan travel companion!',
+                        iconURL: interaction.client.user.displayAvatarURL()
+                    })
+                    .setTimestamp();
                 return await interaction.editReply({ embeds: [embed] });
             }
 
@@ -314,7 +444,12 @@ module.exports = {
                 const embed = new EmbedBuilder()
                     .setColor('#FF0000')
                     .setTitle('Error')
-                    .setDescription(`<@${targetUserId}> is not in **${activeTrip.name}**!`);
+                    .setDescription(`<@${targetUserId}> is not in **${activeTrip.name}**!`)
+                    .setFooter({
+                        text: 'Your japan travel companion!',
+                        iconURL: interaction.client.user.displayAvatarURL()
+                    })
+                    .setTimestamp();
                 return await interaction.editReply({ embeds: [embed] });
             }
 
@@ -322,7 +457,12 @@ module.exports = {
                 const embed = new EmbedBuilder()
                     .setColor('#FF0000')
                     .setTitle('Error')
-                    .setDescription('You cannot remove the trip creator!');
+                    .setDescription('You cannot remove the trip creator!')
+                    .setFooter({
+                        text: 'Your japan travel companion!',
+                        iconURL: interaction.client.user.displayAvatarURL()
+                    })
+                    .setTimestamp();
                 return await interaction.editReply({ embeds: [embed] });
             }
 
@@ -333,7 +473,12 @@ module.exports = {
             const embed = new EmbedBuilder()
                 .setColor('#00FF00')
                 .setTitle('User Removed')
-                .setDescription(`Removed <@${targetUserId}> from **${activeTrip.name}**!`);
+                .setDescription(`Removed <@${targetUserId}> from **${activeTrip.name}**!`)
+                .setFooter({
+                    text: 'Your japan travel companion!',
+                    iconURL: interaction.client.user.displayAvatarURL()
+                })
+                .setTimestamp();
             await interaction.editReply({ embeds: [embed] });
         } else if (subcommand === 'delete') {
             const userTrips = await trips.find({ userId }).toArray();
@@ -361,7 +506,12 @@ module.exports = {
             const embed = new EmbedBuilder()
                 .setColor('#FF4500')
                 .setTitle('Delete a Trip')
-                .setDescription('Select a trip from the dropdown below to delete it. Only trips you created are shown.');
+                .setDescription('Select a trip from the dropdown below to delete it. Only trips you created are shown.')
+                .setFooter({
+                    text: 'Your japan travel companion!',
+                    iconURL: interaction.client.user.displayAvatarURL()
+                })
+                .setTimestamp();
 
             await interaction.editReply({ embeds: [embed], components: [row] });
         }

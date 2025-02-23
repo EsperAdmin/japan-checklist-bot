@@ -17,7 +17,12 @@ module.exports = {
                 const embed = new EmbedBuilder()
                     .setColor('#FF0000')
                     .setTitle('Error')
-                    .setDescription('Trip name must be 100 characters or less!');
+                    .setDescription('Trip name must be 100 characters or less!')
+                    .setFooter({
+                        text: 'Your japan travel companion!',
+                        iconURL: interaction.client.user.displayAvatarURL()
+                    })
+                    .setTimestamp();
                 return await interaction.editReply({ embeds: [embed] });
             }
             trip = await trips.findOne({ users: userId, name: mongoSanitize(name) });
@@ -27,14 +32,24 @@ module.exports = {
                 const embed = new EmbedBuilder()
                     .setColor('#FF0000')
                     .setTitle('Error')
-                    .setDescription('No active trip set! Use `/active` to set one.');
+                    .setDescription('No active trip set! Use `/active` to set one.')
+                    .setFooter({
+                        text: 'Your japan travel companion!',
+                        iconURL: interaction.client.user.displayAvatarURL()
+                    })
+                    .setTimestamp();
                 return await interaction.editReply({ embeds: [embed] });
             }
             if (!uuidValidate(activeTripEntry.tripId)) {
                 const embed = new EmbedBuilder()
                     .setColor('#FF0000')
                     .setTitle('Error')
-                    .setDescription('Invalid trip ID format!');
+                    .setDescription('Invalid trip ID format!')
+                    .setFooter({
+                        text: 'Your japan travel companion!',
+                        iconURL: interaction.client.user.displayAvatarURL()
+                    })
+                    .setTimestamp();
                 return await interaction.editReply({ embeds: [embed] });
             }
             trip = await trips.findOne({ tripId: mongoSanitize(activeTripEntry.tripId), users: userId });
@@ -44,7 +59,12 @@ module.exports = {
             const embed = new EmbedBuilder()
                 .setColor('#FF0000')
                 .setTitle('Error')
-                .setDescription('Trip not found or you don’t have access!');
+                .setDescription('Trip not found or you don’t have access!')
+                .setFooter({
+                    text: 'Your japan travel companion!',
+                    iconURL: interaction.client.user.displayAvatarURL()
+                })
+                .setTimestamp();
             return await interaction.editReply({ embeds: [embed] });
         }
 
@@ -62,7 +82,12 @@ module.exports = {
                 { name: 'Users', value: users, inline: true },
                 { name: 'Items', value: paginatedItems },
                 { name: 'Page', value: `1/${totalPages}`, inline: true }
-            );
+            )
+            .setFooter({
+                text: 'Your japan travel companion!',
+                iconURL: interaction.client.user.displayAvatarURL()
+            })
+            .setTimestamp();
 
         const buttons = new ActionRowBuilder()
             .addComponents(

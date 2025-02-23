@@ -20,7 +20,12 @@ module.exports = {
             const embed = new EmbedBuilder()
                 .setColor('#FF0000')
                 .setTitle('Error')
-                .setDescription('Item name must be 100 characters or less!');
+                .setDescription('Item name must be 100 characters or less!')
+                .setFooter({
+                    text: 'Your japan travel companion!',
+                    iconURL: interaction.client.user.displayAvatarURL()
+                })
+                .setTimestamp();
             return await interaction.editReply({ embeds: [embed] });
         }
 
@@ -33,7 +38,12 @@ module.exports = {
             const embed = new EmbedBuilder()
                 .setColor('#FF0000')
                 .setTitle('Error')
-                .setDescription('Item name contains inappropriate language and cannot be used.');
+                .setDescription('Item name contains inappropriate language and cannot be used.')
+                .setFooter({
+                    text: 'Your japan travel companion!',
+                    iconURL: interaction.client.user.displayAvatarURL()
+                })
+                .setTimestamp();
             return await interaction.editReply({ embeds: [embed] });
         }
 
@@ -41,7 +51,12 @@ module.exports = {
             const embed = new EmbedBuilder()
                 .setColor('#FF0000')
                 .setTitle('Error')
-                .setDescription('Item name cannot be empty after sanitization!');
+                .setDescription('Item name cannot be empty after sanitization!')
+                .setFooter({
+                    text: 'Your japan travel companion!',
+                    iconURL: interaction.client.user.displayAvatarURL()
+                })
+                .setTimestamp();
             return await interaction.editReply({ embeds: [embed] });
         }
 
@@ -51,7 +66,12 @@ module.exports = {
             const embed = new EmbedBuilder()
                 .setColor('#FF0000')
                 .setTitle('Error')
-                .setDescription('No active trip set! Use `/active` to set one.');
+                .setDescription('No active trip set! Use `/active` to set one.')
+                .setFooter({
+                    text: 'Your japan travel companion!',
+                    iconURL: interaction.client.user.displayAvatarURL()
+                })
+                .setTimestamp();
             return await interaction.editReply({ embeds: [embed] });
         }
 
@@ -60,7 +80,12 @@ module.exports = {
                 .setColor('#FF0000')
                 .setTitle('Error')
                 .setDescription('Invalid trip ID format!');
-            return await interaction.editReply({ embeds: [embed] });
+            return await interaction.editReply({ embeds: [embed] })
+            .setFooter({
+                text: 'Your japan travel companion!',
+                iconURL: interaction.client.user.displayAvatarURL()
+            })
+            .setTimestamp();
         }
 
         const sanitizedTripId = mongoSanitize(activeTripEntry.tripId);
@@ -69,7 +94,12 @@ module.exports = {
             const embed = new EmbedBuilder()
                 .setColor('#FF0000')
                 .setTitle('Error')
-                .setDescription('Active trip not found or you don’t have access!');
+                .setDescription('Active trip not found or you don’t have access!')
+                .setFooter({
+                    text: 'Your japan travel companion!',
+                    iconURL: interaction.client.user.displayAvatarURL()
+                })
+                .setTimestamp();
             return await interaction.editReply({ embeds: [embed] });
         }
 
@@ -78,7 +108,12 @@ module.exports = {
             const embed = new EmbedBuilder()
                 .setColor('#FF0000')
                 .setTitle('Error')
-                .setDescription('Maximum item limit of 25 reached for this trip!');
+                .setDescription('Maximum item limit of 25 reached for this trip!')
+                .setFooter({
+                    text: 'Your japan travel companion!',
+                    iconURL: interaction.client.user.displayAvatarURL()
+                })
+                .setTimestamp();
             return await interaction.editReply({ embeds: [embed] });
         }
 
@@ -89,7 +124,12 @@ module.exports = {
         const embed = new EmbedBuilder()
             .setColor('#00FF00')
             .setTitle('Item Added')
-            .setDescription(`Added **${item}** as item #${itemId} to **${activeTrip.name}**!`);
+            .setDescription(`Added **${item}** as item #${itemId} to **${activeTrip.name}**!`)
+            .setFooter({
+                text: 'Your japan travel companion!',
+                iconURL: interaction.client.user.displayAvatarURL()
+            })
+            .setTimestamp();
         await interaction.editReply({ embeds: [embed] });
     },
 };

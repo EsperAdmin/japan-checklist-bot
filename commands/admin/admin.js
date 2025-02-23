@@ -32,7 +32,12 @@ module.exports = {
             const embed = new EmbedBuilder()
                 .setColor('#FF0000')
                 .setTitle('Error')
-                .setDescription('This command is restricted to the bot owner!');
+                .setDescription('This command is restricted to the bot owner!')
+                .setFooter({
+                    text: 'Your japan travel companion!',
+                    iconURL: interaction.client.user.displayAvatarURL()
+                })
+                .setTimestamp();
             return await interaction.editReply({ embeds: [embed] });
         }
 
@@ -48,7 +53,12 @@ module.exports = {
                     const embed = new EmbedBuilder()
                         .setColor('#FF0000')
                         .setTitle('Error')
-                        .setDescription('Invalid trip ID format!');
+                        .setDescription('Invalid trip ID format!')
+                        .setFooter({
+                            text: 'Your japan travel companion!',
+                            iconURL: interaction.client.user.displayAvatarURL()
+                        })
+                        .setTimestamp();
                     return await interaction.editReply({ embeds: [embed] });
                 }
 
@@ -57,7 +67,12 @@ module.exports = {
                     const embed = new EmbedBuilder()
                         .setColor('#FF0000')
                         .setTitle('Error')
-                        .setDescription(`Trip ID ${tripId} not found!`);
+                        .setDescription(`Trip ID ${tripId} not found!`)
+                        .setFooter({
+                            text: 'Your japan travel companion!',
+                            iconURL: interaction.client.user.displayAvatarURL()
+                        })
+                        .setTimestamp();
                     return await interaction.editReply({ embeds: [embed] });
                 }
 
@@ -67,35 +82,60 @@ module.exports = {
                     const embed = new EmbedBuilder()
                         .setColor('#00FF00')
                         .setTitle('Trip Deleted')
-                        .setDescription(`Trip **${trip.name}** (ID: ${tripId}) has been deleted!`);
+                        .setDescription(`Trip **${trip.name}** (ID: ${tripId}) has been deleted!`)
+                        .setFooter({
+                            text: 'Your japan travel companion!',
+                            iconURL: interaction.client.user.displayAvatarURL()
+                        })
+                        .setTimestamp();
                     return await interaction.editReply({ embeds: [embed] });
                 } else if (action === 'adduser' && user) {
                     if (trip.users.includes(user.id)) {
                         const embed = new EmbedBuilder()
                             .setColor('#FFA500')
                             .setTitle('Warning')
-                            .setDescription(`<@${user.id}> is already in **${trip.name}**!`);
+                            .setDescription(`<@${user.id}> is already in **${trip.name}**!`)
+                            .setFooter({
+                                text: 'Your japan travel companion!',
+                                iconURL: interaction.client.user.displayAvatarURL()
+                            })
+                            .setTimestamp();
                         return await interaction.editReply({ embeds: [embed] });
                     }
                     await trips.updateOne({ tripId }, { $push: { users: mongoSanitize(user.id) } });
                     const embed = new EmbedBuilder()
                         .setColor('#00FF00')
                         .setTitle('User Added')
-                        .setDescription(`Added <@${user.id}> to **${trip.name}** (ID: ${tripId})!`);
+                        .setDescription(`Added <@${user.id}> to **${trip.name}** (ID: ${tripId})!`)
+                        .setFooter({
+                            text: 'Your japan travel companion!',
+                            iconURL: interaction.client.user.displayAvatarURL()
+                        })
+                        .setTimestamp();
                     return await interaction.editReply({ embeds: [embed] });
                 } else if (action === 'removeuser' && user) {
                     if (!trip.users.includes(user.id)) {
                         const embed = new EmbedBuilder()
                             .setColor('#FF0000')
                             .setTitle('Error')
-                            .setDescription(`<@${user.id}> is not in **${trip.name}**!`);
+                            .setDescription(`<@${user.id}> is not in **${trip.name}**!`)
+                            .setFooter({
+                                text: 'Your japan travel companion!',
+                                iconURL: interaction.client.user.displayAvatarURL()
+                            })
+                            .setTimestamp();
                         return await interaction.editReply({ embeds: [embed] });
                     }
                     if (user.id === trip.userId) {
                         const embed = new EmbedBuilder()
                             .setColor('#FF0000')
                             .setTitle('Error')
-                            .setDescription('Cannot remove the trip creator!');
+                            .setDescription('Cannot remove the trip creator!')
+                            .setFooter({
+                                text: 'Your japan travel companion!',
+                                iconURL: interaction.client.user.displayAvatarURL()
+                            })
+                            .setTimestamp();
                         return await interaction.editReply({ embeds: [embed] });
                     }
                     await trips.updateOne({ tripId }, { $pull: { users: mongoSanitize(user.id) } });
@@ -103,13 +143,23 @@ module.exports = {
                     const embed = new EmbedBuilder()
                         .setColor('#00FF00')
                         .setTitle('User Removed')
-                        .setDescription(`Removed <@${user.id}> from **${trip.name}** (ID: ${tripId})!`);
+                        .setDescription(`Removed <@${user.id}> from **${trip.name}** (ID: ${tripId})!`)
+                        .setFooter({
+                            text: 'Your japan travel companion!',
+                            iconURL: interaction.client.user.displayAvatarURL()
+                        })
+                        .setTimestamp();
                     return await interaction.editReply({ embeds: [embed] });
                 } else {
                     const embed = new EmbedBuilder()
                         .setColor('#FF0000')
                         .setTitle('Error')
-                        .setDescription('Invalid action or missing user! Use: delete, adduser, removeuser.');
+                        .setDescription('Invalid action or missing user! Use: delete, adduser, removeuser.')
+                        .setFooter({
+                            text: 'Your japan travel companion!',
+                            iconURL: interaction.client.user.displayAvatarURL()
+                        })
+                        .setTimestamp();
                     return await interaction.editReply({ embeds: [embed] });
                 }
             }
@@ -147,34 +197,59 @@ module.exports = {
                     const embed = new EmbedBuilder()
                         .setColor('#FFA500')
                         .setTitle('Warning')
-                        .setDescription(`<@${userId}> is already blacklisted!`);
+                        .setDescription(`<@${userId}> is already blacklisted!`)
+                        .setFooter({
+                            text: 'Your japan travel companion!',
+                            iconURL: interaction.client.user.displayAvatarURL()
+                        })
+                        .setTimestamp();
                     return await interaction.editReply({ embeds: [embed] });
                 }
                 await blacklist.insertOne({ userId });
                 const embed = new EmbedBuilder()
                     .setColor('#00FF00')
                     .setTitle('User Blacklisted')
-                    .setDescription(`<@${userId}> (ID: ${userId}) has been added to the blacklist!`);
+                    .setDescription(`<@${userId}> (ID: ${userId}) has been added to the blacklist!`)
+                    .setFooter({
+                        text: 'Your japan travel companion!',
+                        iconURL: interaction.client.user.displayAvatarURL()
+                    })
+                    .setTimestamp();
                 await interaction.editReply({ embeds: [embed] });
             } else if (action === 'remove') {
                 if (!await blacklist.findOne({ userId })) {
                     const embed = new EmbedBuilder()
                         .setColor('#FF0000')
                         .setTitle('Error')
-                        .setDescription(`<@${userId}> is not blacklisted!`);
+                        .setDescription(`<@${userId}> is not blacklisted!`)
+                        .setFooter({
+                            text: 'Your japan travel companion!',
+                            iconURL: interaction.client.user.displayAvatarURL()
+                        })
+                        .setTimestamp();
                     return await interaction.editReply({ embeds: [embed] });
                 }
                 await blacklist.deleteOne({ userId });
                 const embed = new EmbedBuilder()
                     .setColor('#00FF00')
                     .setTitle('User Removed from Blacklist')
-                    .setDescription(`<@${userId}> (ID: ${userId}) has been removed from the blacklist!`);
+                    .setDescription(`<@${userId}> (ID: ${userId}) has been removed from the blacklist!`)
+                    .setFooter({
+                        text: 'Your japan travel companion!',
+                        iconURL: interaction.client.user.displayAvatarURL()
+                    })
+                    .setTimestamp();
                 await interaction.editReply({ embeds: [embed] });
             } else {
                 const embed = new EmbedBuilder()
                     .setColor('#FF0000')
                     .setTitle('Error')
-                    .setDescription('Invalid action! Use: add or remove.');
+                    .setDescription('Invalid action! Use: add or remove.')
+                    .setFooter({
+                        text: 'Your japan travel companion!',
+                        iconURL: interaction.client.user.displayAvatarURL()
+                    })
+                    .setTimestamp();
                 await interaction.editReply({ embeds: [embed] });
             }
         } else if (subcommand === 'blacklistview') {
@@ -189,7 +264,11 @@ module.exports = {
                 .setColor('#FF0000')
                 .setTitle('Blacklisted Users')
                 .setDescription(paginatedUsers)
-                .addFields({ name: 'Page', value: `1/${totalPages}`, inline: true });
+                .addFields({ name: 'Page', value: `1/${totalPages}`, inline: true })                .setFooter({
+                    text: 'Your japan travel companion!',
+                    iconURL: interaction.client.user.displayAvatarURL()
+                })
+                .setTimestamp();
 
             const buttons = new ActionRowBuilder()
                 .addComponents(

@@ -20,7 +20,12 @@ module.exports = {
             const embed = new EmbedBuilder()
                 .setColor('#FF0000')
                 .setTitle('Error')
-                .setDescription('Trip name must be 100 characters or less!');
+                .setDescription('Trip name must be 100 characters or less!')
+                .setFooter({
+                    text: 'Your japan travel companion!',
+                    iconURL: interaction.client.user.displayAvatarURL()
+                })
+                .setTimestamp();
             return await interaction.editReply({ embeds: [embed] });
         }
 
@@ -33,7 +38,12 @@ module.exports = {
             const embed = new EmbedBuilder()
                 .setColor('#FF0000')
                 .setTitle('Error')
-                .setDescription('Trip name contains inappropriate language and cannot be used.');
+                .setDescription('Trip name contains inappropriate language and cannot be used.')
+                .setFooter({
+                    text: 'Your japan travel companion!',
+                    iconURL: interaction.client.user.displayAvatarURL()
+                })
+                .setTimestamp();
             return await interaction.editReply({ embeds: [embed] });
         }
 
@@ -41,7 +51,12 @@ module.exports = {
             const embed = new EmbedBuilder()
                 .setColor('#FF0000')
                 .setTitle('Error')
-                .setDescription('Trip name cannot be empty after sanitization!');
+                .setDescription('Trip name cannot be empty after sanitization!')
+                .setFooter({
+                    text: 'Your japan travel companion!',
+                    iconURL: interaction.client.user.displayAvatarURL()
+                })
+                .setTimestamp();
             return await interaction.editReply({ embeds: [embed] });
         }
 
@@ -52,7 +67,12 @@ module.exports = {
             const embed = new EmbedBuilder()
                 .setColor('#FF0000')
                 .setTitle('Error')
-                .setDescription('You have reached the maximum limit of 10 trips!');
+                .setDescription('You have reached the maximum limit of 10 trips!')
+                .setFooter({
+                    text: 'Your japan travel companion!',
+                    iconURL: interaction.client.user.displayAvatarURL()
+                })
+                .setTimestamp();
             return await interaction.editReply({ embeds: [embed] });
         }
 
@@ -72,7 +92,12 @@ module.exports = {
             .setColor('#00FF00')
             .setTitle('Trip Created')
             .setDescription(`**${name}** has been created and set as your active trip!`)
-            .addFields({ name: 'Trip ID', value: tripId });
+            .addFields({ name: 'Trip ID', value: tripId })
+            .setFooter({
+                text: 'Your japan travel companion!',
+                iconURL: interaction.client.user.displayAvatarURL()
+            })
+            .setTimestamp();
         await interaction.editReply({ embeds: [embed] });
     },
 };

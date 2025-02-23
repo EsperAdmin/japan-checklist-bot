@@ -34,6 +34,11 @@ module.exports = {
                 { name: 'Latency', value: `${latency}ms`, inline: true },
                 { name: 'Uptime', value: formatUptime(uptime), inline: true }
             )
+            .setTimestamp()
+            .setFooter({
+                text: 'Your japan travel companion!',
+                iconURL: interaction.client.user.displayAvatarURL()
+            })
             .setTimestamp();
         await interaction.editReply({ embeds: [embed] });
     },

@@ -13,7 +13,12 @@ module.exports = {
             const embed = new EmbedBuilder()
                 .setColor('#3498DB')
                 .setTitle('Trip Requests')
-                .setDescription('You have no pending trip join requests.');
+                .setDescription('You have no pending trip join requests.')
+                .setFooter({
+                    text: 'Your japan travel companion!',
+                    iconURL: interaction.client.user.displayAvatarURL()
+                })
+                .setTimestamp();
             return await interaction.editReply({ embeds: [embed] });
         }
 
@@ -23,7 +28,12 @@ module.exports = {
             .setColor('#FFD700')
             .setTitle('Trip Join Request')
             .setDescription(`<@${request.requesterId}> has invited you to join **${trip.name}** (ID: ${trip.tripId}).`)
-            .addFields({ name: 'Pending Requests', value: `${pendingRequests.length}`, inline: true });
+            .addFields({ name: 'Pending Requests', value: `${pendingRequests.length}`, inline: true })
+            .setFooter({
+                text: 'Your japan travel companion!',
+                iconURL: interaction.client.user.displayAvatarURL()
+            })
+            .setTimestamp();
 
         const buttons = new ActionRowBuilder()
             .addComponents(

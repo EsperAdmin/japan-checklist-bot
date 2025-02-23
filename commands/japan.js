@@ -30,7 +30,7 @@ module.exports = {
                 .setTitle('Error')
                 .setDescription('Failed to fetch a Japan image. Try again later!')
                 .setFooter({
-                    text: 'Your Japan Travel Buddy!',
+                    text: 'Your japan travel companion!',
                     iconURL: interaction.client.user.displayAvatarURL()
                 })
                 .setTimestamp();

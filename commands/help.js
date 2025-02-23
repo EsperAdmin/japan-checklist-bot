@@ -34,7 +34,7 @@ module.exports = {
                 .setDescription(commandList)
                 .addFields({ name: 'Page', value: `${page}/${totalPages}`, inline: true })
                 .setFooter({
-                    text: 'This is an open-source Discord bot created with Grok 3 by xAI.',
+                    text: 'Your japan travel companion!',
                     iconURL: interaction.client.user.displayAvatarURL()
                 })
                 .setTimestamp();
