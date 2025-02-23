@@ -15,5 +15,12 @@
   "bugs": {
     "url": "https://github.com/EsperAdmin/japan-checklist-bot/issues"
   },
-  "homepage": "https://github.com/EsperAdmin/japan-checklist-bot#readme"
+  "homepage": "https://github.com/EsperAdmin/japan-checklist-bot#readme",
+  "dependencies": {
+    "discord.js": "^14.18.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.21.0",
+    "eslint": "^9.21.0"
+  }
 }
