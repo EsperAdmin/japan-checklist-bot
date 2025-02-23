@@ -71,7 +71,7 @@ Here's how you can use Japan Trip Planner in your Discord channel:
   Example: `/complete 1`
 
 - **Uncomplete an item**: `/uncomplete <index>`\
-  Example: `/uncomplete 2`_
+  Example: `/uncomplete 2`
 
 
 ---
