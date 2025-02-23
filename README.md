@@ -53,5 +53,19 @@ Run these slash commands in your Discord server:
 ### Installation
 1. **Clone the Repository**:
    ```bash
-   git clone <repository-url>
-   cd checklist-bot
+   git clone https://github.com/EsperAdmin/japan-checklist-bot.git
+   cd japan-checklist-bot
+   
+2. **Install Dependencies**: 
+   ```bash
+   npm install
+   
+3. **Set Environment Variables** (in `.env` file):
+   ```bash
+   - `DISCORD_TOKEN`: Your Discord bot token.
+   - `MONGODB_URI`: The URI for your MongoDB instance.
+   - `UNSPLASH_ACCESS_KEY`: Unsplash API key.
+
+
+
+
