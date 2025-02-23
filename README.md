@@ -66,6 +66,7 @@ Run these slash commands in your Discord server:
    - `UNSPLASH_ACCESS_KEY`: Unsplash API key.
 
 ### Running the Bot 
+   1. **Start the Bot**:
    ```bash 
    node shard.js
 
