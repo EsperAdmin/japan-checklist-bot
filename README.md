@@ -72,6 +72,8 @@ Run these slash commands in your Discord server:
 ## Extra information
 This bot was created with the help of the [Discord.js](https://discordjs.guide/) library and [MongoDB](https://www.mongodb.com/). It's a great way to learn about these technologies while building something useful. Enjoy your journey into the world of Discord bots! Also with help from Grok3/Qwen2.5-coder:32b and @EsperAdmin
 
+Bad words list credit: https://github.com/LDNOOBW/List-of-Dirty-Naughty-Obscene-and-Otherwise-Bad-Words/blob/master/en
+
 
 
 
