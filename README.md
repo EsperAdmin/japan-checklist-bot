@@ -50,7 +50,7 @@ Run these slash commands in your Discord server:
 - **Discord Bot Token**: Create a bot at [Discord Developer Portal](https://discord.com/developers/applications)
 - **Unsplash API Key**: For the `/japan` command (get from [Unsplash Developers](https://unsplash.com/developers))
 
-### Installation
+### Installation and running the bot
 1. **Clone the Repository**:
    ```bash
    git clone https://github.com/EsperAdmin/japan-checklist-bot.git
@@ -65,12 +65,11 @@ Run these slash commands in your Discord server:
    - `MONGODB_URI`: The URI for your MongoDB instance.
    - `UNSPLASH_ACCESS_KEY`: Unsplash API key.
 
-### Running the Bot 
-   1. **Start the Bot**:
+4. **Start the Bot**:
    ```bash 
    node shard.js
 
-### Extra information
+## Extra information
 This bot was created with the help of the [Discord.js](https://discordjs.guide/) library and [MongoDB](https://www.mongodb.com/). It's a great way to learn about these technologies while building something useful. Enjoy your journey into the world of Discord bots! Also with help from Grok3/Qwen2.5-coder:32b and @EsperAdmin
 
 
