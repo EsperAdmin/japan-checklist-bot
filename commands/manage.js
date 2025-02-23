@@ -129,7 +129,12 @@ module.exports = {
             const embed = new EmbedBuilder()
                 .setColor('#00FF00')
                 .setTitle('Item Completed')
-                .setDescription(`Marked item #${itemId} (**${item.name}**) as complete in **${activeTrip.name}**!`);
+                .setDescription(`Marked item #${itemId} (**${item.name}**) as complete in **${activeTrip.name}**!`)
+                .setFooter({
+                    text: 'Your japan travel companion!',
+                    iconURL: interaction.client.user.displayAvatarURL()
+                })
+                .setTimestamp();
             await interaction.editReply({ embeds: [embed] });
         } else if (subcommand === 'remove') {
             const itemId = interaction.options.getInteger('item_id');
@@ -486,7 +491,12 @@ module.exports = {
                 const embed = new EmbedBuilder()
                     .setColor('#FF0000')
                     .setTitle('Error')
-                    .setDescription('You have no trips to delete!');
+                    .setDescription('You have no trips to delete!')
+                    .setFooter({
+                        text: 'Your japan travel companion!',
+                        iconURL: interaction.client.user.displayAvatarURL()
+                    })
+                    .setTimestamp();
                 return await interaction.editReply({ embeds: [embed] });
             }
 
